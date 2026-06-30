@@ -1,6 +1,6 @@
 # 長縄工務店 ウェブサイト
 
-**公開URL**: https://amekw310-debug.github.io/my-company-site/website-practice/naganawa/
+**公開URL**: https://amekw310-debug.github.io/naganawa-website/
 
 ---
 
@@ -19,8 +19,7 @@
 | 事業内容 | 舗装工事業・土木工事業・ICT施工・区画線工事 |
 | 主な施工エリア | 春日井市・名古屋市・愛知県内全域 |
 | ホスティング | GitHub Pages（静的サイト） |
-| リポジトリ | `amekw310-debug/my-company-site` |
-| ファイルパス | `website-practice/naganawa/` |
+| リポジトリ | `amekw310-debug/naganawa-website` |
 
 ---
 
@@ -83,7 +82,7 @@
 ## ページ構成
 
 ```
-website-practice/naganawa/
+naganawa-website/
 ├── index.html          # トップページ
 ├── about.html          # 会社案内
 ├── business.html       # 事業内容
@@ -94,10 +93,7 @@ website-practice/naganawa/
 │   ├── logo.png        # ロゴ（メイン使用）
 │   └── logo.jpg        # ロゴ（予備）
 └── news/
-    ├── 20250106-new-year.html          # お知らせ：年始挨拶
-    ├── 20250315-ict-initiative.html    # お知らせ：ICT施工取り組み
-    ├── 20250410-road-construction.html # お知らせ：道路工事実績
-    └── 20250601-recruitment.html       # お知らせ：採用募集
+    └── index.html      # 新着情報一覧（現在記事なし）
 ```
 
 ### 各ページの主要セクション
@@ -146,7 +142,7 @@ website-practice/naganawa/
 ### 完了済み
 
 - [x] 全ページのHTML・CSS実装（index / about / business / recruit / contact）
-- [x] ニュース記事4件（`news/` ディレクトリ）
+- [x] 新着情報ページ（`news/index.html`、記事は現在なし）
 - [x] モバイル対応（ハンバーガーメニュー・固定下部バー）
 - [x] ロゴ画像の導入（`images/logo.png`）
 - [x] SEO対策（meta description / keywords / canonical / OGP / 構造化データ JSON-LD）
@@ -228,7 +224,6 @@ website-practice/naganawa/
 ### Git ブランチ運用
 
 - メインブランチ: `main`（GitHub Pages の公開ソース）
-- 作業ブランチ: `claude/naganawa-recruitment-site-7j2i30`（作業後 main にマージ）
 
 ---
 
@@ -243,10 +238,8 @@ website-practice/naganawa/
 
 【プロジェクト概要】
 - 株式会社 長縄工務店（愛知県春日井市・舗装工事/土木工事/ICT施工）のコーポレートサイト
-- GitHub Pages で公開中: https://amekw310-debug.github.io/my-company-site/website-practice/naganawa/
-- リポジトリ: amekw310-debug/my-company-site
-- ファイルパス: website-practice/naganawa/
-- 作業ブランチ: claude/naganawa-recruitment-site-7j2i30（このブランチで作業してください）
+- GitHub Pages で公開中: https://amekw310-debug.github.io/naganawa-website/
+- リポジトリ: amekw310-debug/naganawa-website
 
 【技術スタック】
 - 純粋なHTML/CSS（フレームワークなし）
@@ -269,6 +262,6 @@ website-practice/naganawa/
 4. ファビコン設定
 5. お問い合わせフォームのバックエンド連携
 
-詳細は website-practice/naganawa/README.md を読んでください。
+詳細は README.md を読んでください。
 今日は何から進めますか？
 ```

@@ -3388,7 +3388,12 @@ body::before {
 
 @media (max-width: 600px) {
   .loading-overlay {
-    background: #241b36 url('images/commitment_to_the_road2.png') center/contain no-repeat;
+    background-color: #241b36;
+    background-image: url('images/commitment_to_the_road2.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: screen;
   }
   .loading-fullbg-img {
     display: none;

@@ -1514,14 +1514,24 @@ ul {
 }
 
 .biz-card-link {
+  display: inline-block;
+  margin-top: 4px;
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--navy-dark);
   letter-spacing: 0.02em;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--navy-dark);
+  transition: background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 .biz-card:hover .biz-card-link {
-  color: var(--accent-dark);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--navy-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(200, 212, 0, 0.45);
 }
 
 /* ============================

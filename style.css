@@ -3561,3 +3561,337 @@ body::before {
     padding: 24px 20px;
   }
 }
+
+/* ============================================================
+   スマホ総合レイアウト修正 (≤430px / ≤600px / ≤768px)
+   ============================================================ */
+
+/* 横スクロール防止 */
+html, body {
+  overflow-x: hidden;
+}
+
+/* ── 768px 以下 ── */
+@media (max-width: 768px) {
+  .inner {
+    padding: 0 16px;
+  }
+
+  /* ヒーロー */
+  .hero-title {
+    font-size: clamp(26px, 8vw, 40px);
+  }
+
+  /* インデックスページ: ニュース＋採用バナーの横並びボタンを縦積みに */
+  .recruit-banner-inner,
+  .news-banner-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  /* ニュース＆採用バナー内ボタン幅を画面に合わせる */
+  .recruit-banner-inner .btn,
+  .news-banner-inner .btn {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* セクションパディング */
+  .section {
+    padding: 56px 0;
+  }
+
+  /* ICTページ: hero 2カラム → 縦積み */
+  .inner > div[style*="display:flex"] {
+    flex-wrap: wrap;
+  }
+
+  /* Business 詳細グリッド画像 */
+  .biz-detail-img-wrap {
+    min-height: 220px;
+  }
+
+  /* フッターナビ折り返し */
+  .footer-nav {
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    justify-content: center;
+  }
+
+  /* フッター全体 */
+  .footer-inner {
+    text-align: center;
+    gap: 20px;
+  }
+
+  /* 会社概要テーブル */
+  .company-table th {
+    white-space: normal;
+  }
+}
+
+/* ── 600px 以下 ── */
+@media (max-width: 600px) {
+  .inner {
+    padding: 0 14px;
+  }
+
+  /* 全画像のはみ出し防止 */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* セクション */
+  .section {
+    padding: 48px 0;
+  }
+
+  /* セクションタイトル */
+  .section-title {
+    font-size: clamp(22px, 6.5vw, 32px);
+  }
+
+  /* ヒーロースライダー */
+  .hero-slider-block .slider-wrap {
+    height: clamp(240px, 55vw, 340px);
+  }
+
+  .slide-caption {
+    padding: 14px 16px;
+    max-width: 90%;
+  }
+
+  .slide-title {
+    font-size: clamp(16px, 5vw, 22px);
+  }
+
+  /* インデックス: ボタン幅固定を上書き */
+  a[style*="width:260px"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ニュースバナー: 採用バナー */
+  .recruit-banner {
+    padding: 48px 0;
+  }
+
+  .recruit-banner-title {
+    font-size: clamp(1.4rem, 6vw, 1.8rem);
+  }
+
+  /* 数字ストリップ */
+  .numbers-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+  }
+
+  .number-item {
+    padding: 20px 12px;
+  }
+
+  .number-value {
+    font-size: clamp(28px, 9vw, 48px);
+  }
+
+  /* 事業概要カード */
+  .biz-intro-cards {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .biz-intro-card:nth-child(n) {
+    grid-column: span 1;
+  }
+
+  /* 事業詳細 */
+  .biz-detail-grid,
+  .biz-detail-grid--reverse {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .biz-detail-img-wrap {
+    min-height: 200px;
+  }
+
+  .biz-detail-img-wrap img {
+    height: 220px;
+    object-fit: cover;
+  }
+
+  .biz-detail-title {
+    font-size: clamp(22px, 6vw, 30px);
+  }
+
+  /* ICTページ: ヒーロー2カラム → 縦積み */
+  .inner > div[style*="display:flex"][style*="align-items:center"] {
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+
+  .inner > div[style*="display:flex"] > div[style*="flex:1"] {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* ICT lead テキスト */
+  .ict-lead {
+    font-size: 0.88rem;
+    line-height: 1.85;
+  }
+
+  /* ict-lead 内の <br> を非表示 */
+  .ict-lead br {
+    display: none;
+  }
+
+  /* ICTステップ */
+  .ict-step-card {
+    padding: 20px 16px;
+  }
+
+  /* 採用ページ */
+  .recruit-section {
+    margin-top: 48px;
+  }
+
+  .recruit-section-title {
+    font-size: clamp(17px, 5vw, 22px);
+  }
+
+  .recruit-sub-title {
+    font-size: 14px;
+  }
+
+  /* テーブル */
+  .recruit-table th,
+  .recruit-table td {
+    font-size: 13px;
+  }
+
+  .salary-highlight {
+    font-size: 1.1rem;
+  }
+
+  /* Persona */
+  .persona-title {
+    font-size: clamp(22px, 6vw, 30px);
+  }
+
+  .persona-img-wrap {
+    min-height: 200px;
+  }
+
+  .persona-img-wrap img {
+    height: 220px;
+    object-fit: cover;
+  }
+
+  /* Reasons */
+  .reason-card {
+    padding: 24px 18px;
+  }
+
+  .reason-title {
+    font-size: clamp(16px, 4.5vw, 20px);
+  }
+
+  /* About: 社長グリッド */
+  .president-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .president-img-wrap {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  /* About: ビジョンカード */
+  .about-vision-cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* About: CTAグリッド */
+  .about-cta-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  /* お問い合わせ */
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  /* フッター */
+  .footer-inner {
+    padding: 40px 16px 80px;
+    gap: 16px;
+  }
+
+  .footer-nav {
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    justify-content: center;
+  }
+
+  .footer-nav a {
+    font-size: 12px;
+  }
+
+  .footer-address {
+    font-size: 12px;
+  }
+
+  /* ヘッダーロゴ */
+  .logo-img {
+    height: 40px;
+  }
+
+  .logo-name {
+    font-size: 12px;
+  }
+
+  /* 固定下部バー */
+  .fixed-bottom-bar {
+    height: 58px;
+  }
+
+  .fbb-item {
+    font-size: 9px;
+  }
+}
+
+/* ── 390px 以下 ── */
+@media (max-width: 390px) {
+  .inner {
+    padding: 0 12px;
+  }
+
+  .section-title {
+    font-size: clamp(20px, 6vw, 28px);
+  }
+
+  .hero-title {
+    font-size: clamp(22px, 7.5vw, 32px);
+  }
+
+  .recruit-banner-title {
+    font-size: clamp(1.2rem, 5.5vw, 1.6rem);
+  }
+
+  .biz-intro-card {
+    padding: 24px 18px;
+  }
+
+  .number-value {
+    font-size: clamp(26px, 8.5vw, 40px);
+  }
+}

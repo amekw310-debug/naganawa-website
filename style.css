@@ -3226,6 +3226,35 @@ body::before {
   animation: loading-glow 1.4s ease 0.1s forwards;
 }
 
+.loading-catchphrase-text {
+  margin: 0 auto 32px;
+  text-align: center;
+  opacity: 0;
+  animation: loading-glow 1.4s ease 0.1s forwards;
+}
+
+.loading-catchphrase-ja {
+  font-family: 'Shippori Mincho B1', 'Hiragino Mincho ProN', serif;
+  font-size: clamp(40px, 8vw, 88px);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  margin: 0 0 16px;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.3);
+}
+
+.loading-catchphrase-en {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(18px, 3vw, 36px);
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0.04em;
+  margin: 0;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-color: rgba(255,255,255,0.35);
+}
+
 @keyframes loading-glow {
   0%   { opacity: 0; }
   100% { opacity: 1; }

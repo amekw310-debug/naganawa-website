@@ -3375,7 +3375,7 @@ body::before {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: #000;
+  background: radial-gradient(ellipse 110% 38% at 50% 50%, #241b36 0%, #100d1c 45%, #000 75%);
   transition: opacity 0.7s ease, visibility 0.7s ease;
 }
 

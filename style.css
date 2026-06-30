@@ -3892,10 +3892,46 @@ html, body {
   }
 }
 
-/* モバイルでインラインwidthが指定されたボタンをauto幅に戻す */
+/* ===== モバイル ボタン統一 ===== */
 @media (max-width: 600px) {
-  a.btn[style*="width:260px"],
-  a.btn[style*="width: 260px"] {
+  /* 全ボタンを中央配置・固定幅に統一 */
+  .btn {
+    display: block !important;
     width: auto !important;
+    max-width: 260px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    padding: 14px 24px !important;
+    font-size: 15px !important;
+  }
+
+  /* btn-lgもsameサイズに */
+  .btn-lg {
+    padding: 14px 24px !important;
+    font-size: 15px !important;
+  }
+
+  /* ボタンを含む中央寄せラッパー */
+  div[style*="text-align:center"] > .btn,
+  div[style*="text-align: center"] > .btn {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* フォームのsubmitボタン */
+  button.btn {
+    display: block !important;
+    width: auto !important;
+    max-width: 260px !important;
+    margin: 20px auto 0 !important;
+  }
+
+  /* recruit nav ボタン (2列グリッド内) は除外してgrid任せにする */
+  .btn-recruit-nav {
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 }

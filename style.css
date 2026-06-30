@@ -3402,7 +3402,7 @@ body::before {
 
 @media (max-width: 600px) {
   .loading-overlay {
-    background: #241b36 url('images/commitment_to_the_road2.png') center/cover no-repeat;
+    background: #241b36 url('images/commitment_to_the_road2.png') center/contain no-repeat;
   }
   .loading-fullbg-img {
     display: none;

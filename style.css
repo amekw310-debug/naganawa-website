@@ -2284,11 +2284,27 @@ ul {
   font-size: 13px;
   font-weight: 700;
   color: #1a1a1a;
+  position: relative;
   transition: color var(--transition);
+}
+
+.footer-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--navy-dark);
+  transition: width 0.25s ease;
 }
 
 .footer-nav a:hover {
   color: var(--navy-dark);
+}
+
+.footer-nav a:hover::after {
+  width: 100%;
 }
 
 .footer-copy {

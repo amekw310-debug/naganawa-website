@@ -3889,3 +3889,11 @@ html, body {
     font-size: clamp(26px, 8.5vw, 40px);
   }
 }
+
+/* モバイルでインラインwidthが指定されたボタンをauto幅に戻す */
+@media (max-width: 600px) {
+  a.btn[style*="width:260px"],
+  a.btn[style*="width: 260px"] {
+    width: auto !important;
+  }
+}

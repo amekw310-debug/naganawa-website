@@ -1586,6 +1586,7 @@ ul {
   border-top: 4px solid var(--navy);
   position: relative;
   z-index: 1;
+  box-shadow: 6px 6px 18px rgba(0, 0, 0, 0.12);
 }
 
 .biz-intro-num {

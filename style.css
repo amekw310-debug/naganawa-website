@@ -1529,7 +1529,7 @@ ul {
    ============================ */
 .biz-intro-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-top: 40px;
 }
@@ -2329,7 +2329,7 @@ ul {
   }
 
   .biz-intro-cards {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .biz-detail-grid,

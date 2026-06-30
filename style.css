@@ -1719,7 +1719,8 @@ ul {
   padding: 64px 0;
 }
 
-.recruit-banner-inner {
+.recruit-banner-inner,
+.news-banner-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2557,6 +2558,57 @@ ul {
     max-width: 320px;
     padding: 16px 32px;
   }
+
+  /* Business intro cards: 1 column on mobile */
+  .biz-intro-cards {
+    grid-template-columns: 1fr;
+  }
+
+  /* News banner: stack on mobile */
+  .news-banner-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .news-banner-inner .btn {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  /* ICT step flow: vertical */
+  .ict-step-flow {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .ict-step-arrow {
+    transform: rotate(90deg);
+    margin: 4px auto;
+  }
+
+  /* Reason cards */
+  .ict-reason-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Header logo size on mobile */
+  .logo-img {
+    height: 44px;
+  }
+
+  .logo-name {
+    font-size: 13px;
+  }
+
+  /* Footer nav wrap tighter */
+  .footer-nav {
+    gap: 12px;
+  }
+
+  /* Section titles */
+  .section-title {
+    font-size: clamp(26px, 7vw, 40px);
+  }
 }
 
 /* ============================================================
@@ -3320,6 +3372,7 @@ body::before {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   opacity: 0;
   animation: loading-glow 1.4s ease 0.1s forwards;
 }

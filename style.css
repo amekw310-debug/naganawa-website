@@ -3375,7 +3375,7 @@ body::before {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: #0a0e1a;
+  background: #000;
   transition: opacity 0.7s ease, visibility 0.7s ease;
 }
 
@@ -3396,15 +3396,9 @@ body::before {
   height: 100%;
   object-fit: contain;
   object-position: center center;
+  background: #000;
   opacity: 0;
   animation: loading-glow 1.4s ease 0.1s forwards;
-}
-
-@media (max-width: 600px) {
-  .loading-fullbg-img {
-    object-fit: contain;
-    object-position: center center;
-  }
 }
 
 @keyframes loading-bg-shift {

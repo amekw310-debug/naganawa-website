@@ -3375,7 +3375,7 @@ body::before {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: #0a0e1a;
+  background: #241b36;
   transition: opacity 0.7s ease, visibility 0.7s ease;
 }
 
@@ -3402,7 +3402,7 @@ body::before {
 
 @media (max-width: 600px) {
   .loading-overlay {
-    background: #000 url('images/commitment_to_the_road2.png') center/cover no-repeat;
+    background: #241b36 url('images/commitment_to_the_road2.png') center/cover no-repeat;
   }
   .loading-fullbg-img {
     display: none;

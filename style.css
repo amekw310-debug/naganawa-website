@@ -607,34 +607,19 @@ ul {
 }
 
 .slide-bg--1 {
-  background-color: #1a1a1a;
-  background-image: url('https://images.pexels.com/photos/56832/road-asphalt-space-sky-56832.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop');
-  background-size: cover;
-  background-position: center;
+  background-color: #3a3a3a;
 }
 .slide-bg--2 {
-  background-color: #1a2a1a;
-  background-image: url('https://images.pexels.com/photos/29274530/pexels-photo-29274530.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop');
-  background-size: cover;
-  background-position: center;
+  background-color: #2e3a2e;
 }
 .slide-bg--3 {
-  background-color: #0f1e2e;
-  background-image: url('https://images.pexels.com/photos/1519088/pexels-photo-1519088.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop');
-  background-size: cover;
-  background-position: center;
+  background-color: #1e2e3a;
 }
 .slide-bg--4 {
-  background-color: #1a2030;
-  background-image: url('https://images.pexels.com/photos/36551115/pexels-photo-36551115.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop');
-  background-size: cover;
-  background-position: center;
+  background-color: #2a2a3a;
 }
 .slide-bg--5 {
-  background-color: #1e2a1e;
-  background-image: url('https://images.pexels.com/photos/29469917/pexels-photo-29469917.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop');
-  background-size: cover;
-  background-position: center;
+  background-color: #3a2a2a;
 }
 
 .slide-caption {

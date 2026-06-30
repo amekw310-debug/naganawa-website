@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="images/favicon.png" type="image/png">
+  <title>送信エラー｜長縄工務店</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header scrolled" id="top">
+  <div class="inner header-inner">
+    <a href="index.html" class="logo">
+      <img src="images/logo.png" alt="長縄工務店 ロゴマーク" class="logo-img">
+      <span class="logo-name">株式会社 長縄工務店</span>
+    </a>
+    <nav class="nav">
+      <a href="index.html">TOP</a>
+      <a href="news/index.html">新着情報</a>
+      <a href="business.html">事業内容</a>
+      <a href="technology.html">ICT施工・技術力</a>
+      <a href="recruit.html">採用情報</a>
+      <a href="about.html">会社情報</a>
+      <a href="contact.html" class="nav-active">お問い合わせ</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="メニューを開く">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="index.html">TOP</a>
+    <a href="news/index.html">新着情報</a>
+    <a href="business.html">事業内容</a>
+    <a href="technology.html">ICT施工・技術力</a>
+    <a href="recruit.html">採用情報</a>
+    <a href="about.html">会社情報</a>
+    <a href="contact.html">お問い合わせ</a>
+  </div>
+</header>
+
+<main>
+  <section class="section section--gray" style="padding-top:120px;min-height:60vh;display:flex;align-items:center;">
+    <div class="inner" style="width:100%;">
+      <div style="max-width:560px;margin:0 auto;text-align:center;">
+        <div style="font-size:56px;margin-bottom:24px;">⚠️</div>
+        <div class="section-header">
+          <p class="section-label">Error</p>
+          <h2 class="section-title">送信エラー</h2>
+        </div>
+
+        <!-- バリデーションエラーメッセージ（URLパラメータから表示） -->
+        <div id="error-messages" style="display:none;background:#fff3f3;border:1px solid #f87171;border-radius:8px;padding:16px 20px;margin-bottom:24px;text-align:left;font-size:14px;color:#b91c1c;line-height:1.8;"></div>
+
+        <p style="color:var(--text-sub);line-height:1.9;margin-bottom:32px;">
+          入力内容にエラーがあるか、送信中に問題が発生しました。<br>
+          お手数ですが、入力フォームに戻って再度お試しください。
+        </p>
+        <p style="color:var(--text-sub);font-size:13px;margin-bottom:40px;">
+          問題が解決しない場合はお電話にてお問い合わせください。<br>
+          <strong>0568-81-6099</strong>（平日 8:00〜17:00）
+        </p>
+        <a href="contact.html" class="btn btn-accent btn-lg" style="display:inline-block;">
+          入力フォームへ戻る
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="inner footer-inner">
+    <p class="footer-address">〒486-0842　愛知県春日井市六軒屋町4丁目63</p>
+    <nav class="footer-nav">
+      <a href="business.html">事業内容</a>
+      <a href="technology.html">ICT施工・技術力</a>
+      <a href="recruit.html">採用情報</a>
+      <a href="about.html">会社情報</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+    <p class="footer-copy">© 2026 長縄工務店. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const navMobile = document.getElementById('nav-mobile');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    navMobile.classList.toggle('open');
+  });
+
+  // URLパラメータからエラーメッセージを表示
+  const params = new URLSearchParams(window.location.search);
+  const errors = params.get('errors');
+  if (errors) {
+    const box = document.getElementById('error-messages');
+    const items = errors.split('|').map(e => '<li>' + e + '</li>').join('');
+    box.innerHTML = '<ul style="margin:0;padding-left:20px;">' + items + '</ul>';
+    box.style.display = 'block';
+  }
+</script>
+</body>
+</html>

@@ -61,41 +61,46 @@
         <h2 class="section-title">お問い合わせ</h2>
       </div>
       <div style="max-width:640px;margin:0 auto;">
-        <form class="contact-form" onsubmit="return false;">
+        <form class="contact-form" action="contact_mail.php" method="post">
+          <input type="hidden" name="phase" value="check">
           <div class="form-group">
-            <label class="form-label">お名前<span class="form-required">必須</span></label>
-            <input type="text" class="form-input" placeholder="山田 太郎">
+            <label class="form-label" for="f-name">お名前<span class="form-required">必須</span></label>
+            <input type="text" id="f-name" name="name" class="form-input" placeholder="山田 太郎" required>
           </div>
           <div class="form-group">
-            <label class="form-label">会社名・団体名</label>
-            <input type="text" class="form-input" placeholder="株式会社○○">
+            <label class="form-label" for="f-kana">ふりがな<span class="form-required">必須</span></label>
+            <input type="text" id="f-kana" name="kana" class="form-input" placeholder="やまだ たろう" required>
           </div>
           <div class="form-group">
-            <label class="form-label">メールアドレス<span class="form-required">必須</span></label>
-            <input type="email" class="form-input" placeholder="example@mail.com">
+            <label class="form-label" for="f-phone">電話番号<span class="form-required">必須</span></label>
+            <input type="tel" id="f-phone" name="phone" class="form-input" placeholder="0568-81-6099" required>
           </div>
           <div class="form-group">
-            <label class="form-label">電話番号</label>
-            <input type="tel" class="form-input" placeholder="000-0000-0000">
+            <label class="form-label" for="f-email">メールアドレス<span class="form-required">必須</span></label>
+            <input type="email" id="f-email" name="email" class="form-input" placeholder="example@mail.com" required>
           </div>
           <div class="form-group">
-            <label class="form-label">お問い合わせ種別<span class="form-required">必須</span></label>
+            <label class="form-label" for="f-occupation">会社名・団体名</label>
+            <input type="text" id="f-occupation" name="occupation" class="form-input" placeholder="株式会社○○">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="f-education">お問い合わせ種別</label>
             <div class="form-select-wrap">
-              <select class="form-select">
+              <select id="f-education" name="education" class="form-select">
                 <option value="">選択してください</option>
-                <option>工事・施工のご相談</option>
-                <option>お見積りのご依頼</option>
-                <option>採用に関するご質問</option>
-                <option>その他</option>
+                <option value="工事・施工のご相談">工事・施工のご相談</option>
+                <option value="お見積りのご依頼">お見積りのご依頼</option>
+                <option value="採用に関するご質問">採用に関するご質問</option>
+                <option value="その他">その他</option>
               </select>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">お問い合わせ内容<span class="form-required">必須</span></label>
-            <textarea class="form-textarea" placeholder="お問い合わせ内容をご記入ください。"></textarea>
+            <label class="form-label" for="f-contents">お問い合わせ内容</label>
+            <textarea id="f-contents" name="contents" class="form-textarea" placeholder="お問い合わせ内容をご記入ください。"></textarea>
           </div>
-          <p class="form-note">※ このフォームはデモです。実際の送信は行われません。</p>
-          <button type="submit" class="btn btn-accent btn-lg" style="width:100%;margin-top:20px;">送信する</button>
+          <p class="form-note">※ 確認画面に進みます。送信は次の画面で行います。</p>
+          <button type="submit" class="btn btn-accent btn-lg" style="width:100%;margin-top:20px;">確認画面へ</button>
         </form>
       </div>
     </div>

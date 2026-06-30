@@ -3181,6 +3181,7 @@ body::before {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: #0a0e1a;
   transition: opacity 0.7s ease, visibility 0.7s ease;
 }
 

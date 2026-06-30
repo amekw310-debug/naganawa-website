@@ -190,6 +190,19 @@ ul {
   transform: translateY(-3px);
 }
 
+.btn-navy {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+.btn-navy:hover {
+  background: var(--navy-dark);
+  border-color: var(--navy-dark);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(26, 47, 94, 0.35);
+}
+
 .btn-lg {
   padding: 18px 44px;
   font-size: 16px;

@@ -234,7 +234,7 @@ ul {
 }
 
 .logo-img {
-  height: 88px;
+  height: 64px;
   width: auto;
   object-fit: contain;
   border-radius: 4px;
@@ -242,7 +242,7 @@ ul {
 }
 
 .logo-name {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--navy-dark);
   letter-spacing: 0.04em;
@@ -253,7 +253,7 @@ ul {
 .nav {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 20px;
 }
 
 .nav a {

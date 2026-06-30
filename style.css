@@ -3193,7 +3193,7 @@ body::before {
 .loading-video-bg {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, #1a2040 0%, #0a0e1a 100%);
+  background: url('images/commitment_to_the_road2.png') center center / cover no-repeat;
 }
 
 @keyframes loading-bg-shift {

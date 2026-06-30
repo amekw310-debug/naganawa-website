@@ -92,7 +92,7 @@ ul {
 }
 
 .section-header--light .section-label {
-  color: var(--navy-mid);
+  color: var(--accent);
 }
 
 .section-header--light .section-title {
@@ -1287,7 +1287,7 @@ ul {
 }
 
 .persona-body .section-label {
-  color: var(--navy);
+  color: var(--accent);
 }
 
 .persona-title {
@@ -1650,11 +1650,11 @@ ul {
 }
 
 .biz-detail-body .section-label {
-  color: var(--navy);
+  color: var(--accent);
 }
 
 .section--navy .biz-detail-body .section-label {
-  color: var(--navy-mid);
+  color: var(--accent);
 }
 
 .biz-detail-title {

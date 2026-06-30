@@ -1789,6 +1789,8 @@ ul {
 
 .recruit-sub-title {
   display: block;
+  max-width: 820px;
+  margin: 32px auto 0;
   background: var(--navy-dark);
   color: var(--white);
   font-size: 14px;
@@ -1796,7 +1798,6 @@ ul {
   letter-spacing: 0.06em;
   text-align: center;
   padding: 12px 16px;
-  margin-top: 32px;
   border-radius: 4px 4px 0 0;
 }
 

@@ -3191,9 +3191,17 @@ body::before {
 }
 
 .loading-video-bg {
+  display: none;
+}
+
+.loading-fullbg-img {
   position: absolute;
   inset: 0;
-  background: url('images/commitment_to_the_road2.png') center center / cover no-repeat;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  animation: loading-glow 1.4s ease 0.1s forwards;
 }
 
 @keyframes loading-bg-shift {

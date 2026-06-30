@@ -221,6 +221,41 @@ naganawa-website/
 - BEM的な命名（例: `.section-header`, `.hero-title`, `.nav-cta`）
 - メディアクエリは `@media (min-width: 768px)` および `@media (min-width: 1024px)` の2段階
 
+### お問い合わせフォームについて
+
+**⚠️ GitHub Pages ではフォーム送信は動作しません。**
+
+GitHub Pages は静的ファイルのみ配信するため PHP が実行されない。
+フォームの動作確認・本番運用は必ず **PHP対応サーバー（Canotec等）** にアップして行うこと。
+
+| ファイル | 役割 |
+|---|---|
+| `contact.html` | 入力フォーム（action="contact_mail.php", method="post"） |
+| `contact_mail.php` | 送信処理（NICONICO MAIL互換） |
+| `config.php` | 送信先・項目定義・自動返信設定 |
+| `contact_confirm.html` | 参照用テンプレート（確認画面はPHPがインライン出力） |
+| `contact_error.html` | エラー画面 |
+| `contact_thanks.html` | 送信完了画面 |
+
+**フォームのname属性とconfig.phpの対応：**
+
+| name属性 | ラベル | 必須 |
+|---|---|---|
+| `name` | お名前 | ✅ |
+| `kana` | ふりがな | ✅ |
+| `phone` | 電話番号 | ✅ |
+| `email` | メールアドレス | ✅ |
+| `occupation` | 会社名・団体名 | |
+| `education` | お問い合わせ種別 | |
+| `contents` | お問い合わせ内容 | |
+
+**本番アップ後の確認手順：**
+1. フォーム送信 → 確認画面（`contact_mail.php` がインライン出力）が表示されるか
+2. 「送信する」→ `contact_thanks.html` に遷移するか
+3. `naganawa.com@ace.ocn.ne.jp` に管理者宛メールが届くか
+4. 入力したメールアドレスに自動返信メールが届くか
+5. 必須項目未入力で `contact_error.html` に遷移するか
+
 ### Git ブランチ運用
 
 - メインブランチ: `main`（GitHub Pages の公開ソース）

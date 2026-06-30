@@ -2575,7 +2575,8 @@ ul {
   /* News banner: stack on mobile */
   .news-banner-inner {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
   }
 
   .news-banner-inner .btn {
@@ -3580,7 +3581,8 @@ html, body {
   .recruit-banner-inner,
   .news-banner-inner {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
     gap: 24px;
   }
 

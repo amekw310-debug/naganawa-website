@@ -3943,19 +3943,24 @@ html, body {
   }
 }
 
-/* ===== PC専用: 募集概要テーブル フォント拡大 ===== */
+/* ===== PC専用: 募集概要テーブル フォント ===== */
 @media (min-width: 769px) {
+  .recruit-sub-title {
+    font-size: 26px;
+    padding: 16px 24px;
+  }
+
   .recruit-table th,
   .recruit-table td {
-    font-size: 22px;
-    padding: 28px 24px;
+    font-size: 18px;
+    padding: 24px 24px;
   }
 
   .recruit-table th {
-    width: 180px;
+    width: 160px;
   }
 
   .recruit-table small {
-    font-size: 18px;
+    font-size: 15px;
   }
 }

@@ -609,19 +609,33 @@ ul {
 }
 
 .slide-bg--1 {
-  background-color: #3a3a3a;
+  background-image: url('images/4E5CE1A5-2617-4CE7-899E-D0D27BBAF856.png');
+  background-color: #1a2a1a;
 }
 .slide-bg--2 {
-  background-color: #2e3a2e;
+  background-image: url('images/IMG_9658.jpeg');
+  background-color: #1a2a1a;
 }
 .slide-bg--3 {
-  background-color: #1e2e3a;
+  background-image: url('images/A8260A1A-C888-41AE-B238-38D36F589C5F.jpeg');
+  background-color: #1a2030;
 }
 .slide-bg--4 {
-  background-color: #2a2a3a;
+  background-image: url('images/IMG_3787.jpeg');
+  background-color: #1a1a2a;
 }
 .slide-bg--5 {
-  background-color: #3a2a2a;
+  background-image: url('images/IMG_0911.jpeg');
+  background-color: #1a2020;
+}
+.slide-bg--6 {
+  background-image: url('images/company_img02.jpg');
+  background-color: #1a1a1a;
+  background-position: center top;
+}
+.slide-bg--7 {
+  background-image: url('images/company_img03.jpg');
+  background-color: #1a1a1a;
 }
 
 .slide-caption {

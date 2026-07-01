@@ -247,6 +247,9 @@ ul {
   justify-content: space-between;
   height: 96px;
   padding-left: 4px;
+  max-width: none;
+  padding-left: 32px;
+  padding-right: 32px;
 }
 
 .logo {

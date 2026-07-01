@@ -3406,7 +3406,7 @@ body::before {
   animation: loading-glow 1.4s ease 0.1s forwards;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1024px) {
   .loading-overlay {
     background-color: #241b36;
     background-image: url('images/commitment_to_the_road2.png');

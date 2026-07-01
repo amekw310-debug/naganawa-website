@@ -1638,8 +1638,11 @@ ul {
 }
 
 .biz-detail-img-wrap img {
-  width: 60%;
-  height: auto;
+  width: 100%;
+  max-width: 440px;
+  height: 340px;
+  object-fit: cover;
+  object-position: center;
   border-radius: 12px;
   display: block;
 }

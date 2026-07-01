@@ -3013,6 +3013,17 @@ ul {
   align-items: center;
 }
 
+.about-teaser-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.about-teaser-body > .btn {
+  align-self: center;
+  margin-top: 8px;
+}
+
 .about-teaser-header {
   text-align: left;
   margin-bottom: 32px;

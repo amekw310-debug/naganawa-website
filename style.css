@@ -1616,7 +1616,7 @@ ul {
    ============================ */
 .biz-detail-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 64px;
   align-items: center;
 }
@@ -1635,9 +1635,13 @@ ul {
   justify-content: center;
   position: relative;
   z-index: 1;
-  max-height: 320px;
-  overflow: hidden;
+}
+
+.biz-detail-img-wrap img {
+  width: 60%;
+  height: auto;
   border-radius: 12px;
+  display: block;
 }
 
 .dummy-img--biz {

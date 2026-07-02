@@ -1654,7 +1654,7 @@ ul {
   max-width: 440px;
   height: 340px;
   object-fit: cover;
-  object-position: center;
+  object-position: top center;
   border-radius: 12px;
   display: block;
 }

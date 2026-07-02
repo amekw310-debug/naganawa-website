@@ -3360,8 +3360,17 @@ ul {
     gap: 16px;
   }
 
+  .company-table {
+    font-size: 17px;
+  }
+
   .company-table th {
     width: 36%;
+    padding: 20px 28px;
+  }
+
+  .company-table td {
+    padding: 20px 28px;
   }
 }
 

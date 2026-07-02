@@ -4204,6 +4204,15 @@ html, body {
     margin: 0 auto;
   }
 
+  /* 新着情報・採用バナー：縦積み中央寄せ */
+  .recruit-banner-inner,
+  .news-banner-inner {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 32px;
+  }
+
   /* 会社概要テーブル */
   .company-table {
     font-size: 15px;

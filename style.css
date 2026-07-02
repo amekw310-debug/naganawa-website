@@ -3168,10 +3168,9 @@ ul {
 }
 
 .president-img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  object-position: center top;
+  width: auto;
+  max-width: 100%;
+  height: auto;
   border-radius: 4px;
   display: block;
 }

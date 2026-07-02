@@ -3382,6 +3382,11 @@ ul {
     text-align: center;
   }
 
+  .about-teaser-body {
+    align-items: center;
+    text-align: center;
+  }
+
   .contact-grid {
     grid-template-columns: 1fr;
     gap: 40px;

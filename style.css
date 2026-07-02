@@ -1573,16 +1573,8 @@ ul {
   margin-top: 40px;
 }
 
-.biz-intro-card:nth-child(-n+3) {
+.biz-intro-card {
   grid-column: span 2;
-}
-
-.biz-intro-card:nth-child(4) {
-  grid-column: 2 / span 2;
-}
-
-.biz-intro-card:nth-child(5) {
-  grid-column: 4 / span 2;
 }
 
 .biz-intro-card {

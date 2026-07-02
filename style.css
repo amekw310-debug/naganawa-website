@@ -3169,7 +3169,7 @@ ul {
 
 .president-img {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
   object-position: center top;
   border-radius: 4px;
@@ -3348,7 +3348,7 @@ ul {
 
   .president-img-wrap {
     width: 100%;
-    max-width: 320px;
+    max-width: 100%;
     margin: 0 auto;
   }
 
@@ -3897,7 +3897,7 @@ html, body {
   }
 
   .president-img-wrap {
-    max-width: 200px;
+    max-width: 100%;
     margin: 0 auto;
   }
 

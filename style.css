@@ -4037,8 +4037,10 @@ html, body {
 
   /* btn-lgもsameサイズに */
   .btn-lg {
-    padding: 14px 24px !important;
-    font-size: 15px !important;
+    padding: 14px 32px !important;
+    font-size: 1rem !important;
+    width: auto !important;
+    max-width: none !important;
   }
 
   /* ボタンを含む中央寄せラッパー */

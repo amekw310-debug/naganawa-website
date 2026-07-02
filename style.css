@@ -3064,8 +3064,9 @@ ul {
 .about-teaser-img-wrap {
   position: relative;
   width: 100%;
-  max-width: 500px;
+  max-width: 560px;
   height: 340px;
+  overflow: visible;
 }
 
 .about-image {
@@ -3087,7 +3088,7 @@ ul {
 
 .about-image--second {
   bottom: 0;
-  right: 0;
+  right: -40px;
   z-index: 2;
   object-position: center 40%;
 }

@@ -389,7 +389,7 @@ ul {
    ============================ */
 .hero {
   position: relative;
-  padding-top: 108px;
+  padding-top: 140px;
   background-color: transparent;
   overflow: hidden;
 }
@@ -467,7 +467,7 @@ ul {
 }
 
 .hero-slider-block .slider-wrap {
-  height: clamp(340px, calc(100vh - 108px), 680px);
+  height: clamp(340px, calc(100vh - 140px), 680px);
 }
 
 .hero-tags {

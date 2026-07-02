@@ -2529,6 +2529,11 @@ ul {
     text-align: center;
   }
 
+  .biz-card-link {
+    padding: 14px 32px;
+    font-size: 1rem;
+  }
+
   .biz-detail-grid,
   .biz-detail-grid--reverse {
     gap: 28px;

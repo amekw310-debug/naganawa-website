@@ -3340,7 +3340,7 @@ ul {
   color: var(--navy);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 900px) {
   .president-grid {
     grid-template-columns: 1fr !important;
     gap: 36px;
@@ -3348,7 +3348,7 @@ ul {
 
   .president-img-wrap {
     width: 100%;
-    max-width: 260px;
+    max-width: 320px;
     margin: 0 auto;
   }
 

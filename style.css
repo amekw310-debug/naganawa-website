@@ -68,7 +68,7 @@ ul {
 
 .section {
   padding: 88px 0;
-  background: rgba(255,255,255,0.88);
+  background: #fff;
 }
 
 .section--navy {
@@ -2229,7 +2229,7 @@ ul {
    Footer
    ============================ */
 .footer {
-  background: rgba(255,255,255,0.92);
+  background: #fff;
   border-top: 2px solid var(--gray-mid);
   padding: 40px 0;
 }

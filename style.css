@@ -3087,8 +3087,8 @@ ul {
 }
 
 .about-image--second {
-  bottom: 0;
-  right: -40px;
+  bottom: -40px;
+  right: -80px;
   z-index: 2;
   object-position: center 40%;
 }

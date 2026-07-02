@@ -4089,6 +4089,34 @@ html, body {
 }
 
 /* ===================================================
+   iPhone横向き・小型タブレット (601px〜767px)
+   =================================================== */
+@media (min-width: 601px) and (max-width: 767px) {
+  .hero {
+    padding-top: 100px;
+  }
+
+  .recruit-banner-inner,
+  .news-banner-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .recruit-banner-inner .btn,
+  .news-banner-inner .btn {
+    width: auto;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .btn-lg {
+    width: auto;
+    max-width: 320px;
+  }
+}
+
+/* ===================================================
    iPad (768px〜1024px) 専用最適化
    =================================================== */
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -4167,6 +4195,13 @@ html, body {
     flex-direction: column;
     text-align: center;
     gap: 32px;
+  }
+
+  .recruit-banner-inner .btn,
+  .news-banner-inner .btn {
+    width: auto;
+    max-width: 320px;
+    margin: 0 auto;
   }
 
   /* 会社概要テーブル */

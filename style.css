@@ -2510,6 +2510,13 @@ ul {
     max-width: 100%;
   }
 
+  .biz-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
   .biz-detail-grid,
   .biz-detail-grid--reverse {
     gap: 28px;

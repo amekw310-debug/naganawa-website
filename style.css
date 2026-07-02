@@ -4088,6 +4088,98 @@ html, body {
   }
 }
 
+/* ===================================================
+   iPad (768px〜1024px) 専用最適化
+   =================================================== */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* ヘッダー */
+  .header-inner {
+    height: 100px;
+  }
+
+  /* ヒーロー */
+  .hero {
+    padding-top: 100px;
+  }
+
+  .hero-slider-block .slider-wrap {
+    height: clamp(320px, 45vw, 480px);
+  }
+
+  /* セクション余白 */
+  .section {
+    padding: 64px 0;
+  }
+
+  .inner {
+    padding: 0 40px;
+  }
+
+  /* About teaser: 縦1カラム */
+  .about-teaser-cols {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .about-teaser-header {
+    text-align: center;
+  }
+
+  .about-teaser-body {
+    align-items: center;
+    text-align: center;
+  }
+
+  .about-teaser-img-wrap {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* 事業カード: 2カラム */
+  .biz-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
+  }
+
+  /* 代表挨拶: 縦1カラム、写真大きめ */
+  .president-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px;
+  }
+
+  .president-img-wrap {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* フォントサイズ */
+  .section-title {
+    font-size: clamp(22px, 3vw, 32px);
+  }
+
+  .about-teaser-text {
+    font-size: 17px;
+  }
+
+  /* 採用バナー */
+  .recruit-banner-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 32px;
+  }
+
+  /* 会社概要テーブル */
+  .company-table {
+    font-size: 15px;
+  }
+
+  .company-table th,
+  .company-table td {
+    padding: 16px 20px;
+  }
+}
+
 /* ===== タブレット: ハンバーガーメニューに切り替え (601px〜1280px) ===== */
 @media (min-width: 601px) and (max-width: 1280px) {
   .nav {

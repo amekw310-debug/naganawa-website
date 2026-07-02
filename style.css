@@ -3062,22 +3062,25 @@ ul {
 }
 
 .about-teaser-img-wrap {
-  position: relative;
-  border-radius: 4px;
-  overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,.12);
-  background: var(--gray-light);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   max-width: 500px;
   width: 100%;
 }
 
 .about-image {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   object-position: center;
   display: block;
-  border-radius: 6px;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.12);
+}
+
+.about-image--second {
+  object-position: center 40%;
 }
 
 /* ============================

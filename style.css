@@ -3461,15 +3461,17 @@ body::before {
 
 @media (max-width: 1024px) {
   .loading-overlay {
-    background-color: #241b36;
-    background-image: url('images/commitment_to_the_road2.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-blend-mode: screen;
+    background-color: #0d0b14;
+    background-image: none;
   }
   .loading-fullbg-img {
-    display: none;
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
   }
 }
 

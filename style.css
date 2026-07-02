@@ -2431,6 +2431,10 @@ ul {
     direction: ltr;
   }
 
+  .biz-detail-grid--reverse .biz-detail-img-wrap {
+    order: -1;
+  }
+
   .recruit-banner-inner {
     flex-direction: column;
     text-align: center;
@@ -3783,6 +3787,10 @@ html, body {
   .biz-detail-grid--reverse {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+
+  .biz-detail-grid--reverse .biz-detail-img-wrap {
+    order: -1;
   }
 
   .biz-detail-img-wrap {

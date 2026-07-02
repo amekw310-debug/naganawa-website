@@ -3162,14 +3162,13 @@ ul {
 /* President message */
 .president-grid {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 56px;
+  grid-template-columns: 400px 1fr;
+  gap: 60px;
   align-items: start;
 }
 
 .president-img {
-  width: auto;
-  max-width: 100%;
+  width: 100%;
   height: auto;
   border-radius: 4px;
   display: block;

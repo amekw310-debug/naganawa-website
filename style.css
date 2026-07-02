@@ -643,6 +643,31 @@ ul {
   background-color: #1a1a1a;
   background-position: center center;
 }
+.slide-bg--8 {
+  background-image: url('images/ChatGPT Image 2026年7月2日 11_57_16.png');
+  background-color: #1a1a2a;
+  background-position: center 65%;
+}
+.slide-bg--9 {
+  background-image: url('images/IMG_3762.jpeg');
+  background-color: #1a2a1a;
+  background-position: center 50%;
+}
+.slide-bg--10 {
+  background-image: url('images/ChatGPT Image 2026年7月2日 11_49_13.png');
+  background-color: #1a2a1a;
+  background-position: center 45%;
+}
+.slide-bg--11 {
+  background-image: url('images/ChatGPT Image 2026年7月2日 11_52_34.png');
+  background-color: #1a2020;
+  background-position: center 40%;
+}
+.slide-bg--12 {
+  background-image: url('images/ChatGPT Image 2026年7月2日 11_52_54.png');
+  background-color: #1a2a1a;
+  background-position: center 50%;
+}
 
 .slide-caption {
   position: absolute;

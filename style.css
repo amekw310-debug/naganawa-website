@@ -2464,11 +2464,11 @@ ul {
 
   /* Hero */
   .hero {
-    padding-top: 72px;
+    padding-top: 100px;
   }
 
   .hero-slider-block .slider-wrap {
-    height: clamp(260px, calc(100vh - 72px), 500px);
+    height: clamp(240px, calc(100vh - 100px), 480px);
   }
 
   .hero-title {

@@ -1652,7 +1652,7 @@ ul {
 .biz-detail-img-wrap img {
   width: 100%;
   max-width: 440px;
-  height: 340px;
+  height: 420px;
   object-fit: cover;
   object-position: top center;
   border-radius: 12px;
@@ -3730,7 +3730,13 @@ html, body {
 
   /* Business 詳細グリッド画像 */
   .biz-detail-img-wrap {
-    min-height: 220px;
+    min-height: 280px;
+  }
+
+  .biz-detail-img-wrap img {
+    height: 340px;
+    object-fit: cover;
+    object-position: top center;
   }
 
   /* フッターナビ折り返し */
@@ -3844,7 +3850,7 @@ html, body {
   }
 
   .biz-detail-img-wrap img {
-    height: 220px;
+    height: 280px;
     object-fit: cover;
     object-position: top center;
   }

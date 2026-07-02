@@ -3659,6 +3659,14 @@ html, body {
     padding: 0 16px;
   }
 
+  .hero {
+    padding-top: 100px;
+  }
+
+  .hero-slider-block .slider-wrap {
+    height: clamp(220px, 50vw, 320px);
+  }
+
   /* ヒーロー */
   .hero-title {
     font-size: clamp(26px, 8vw, 40px);

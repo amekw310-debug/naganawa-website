@@ -3456,7 +3456,7 @@ body::before {
   background-size: 60vmin;
   opacity: 0.06;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
 }
 
 /* ============================================================

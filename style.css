@@ -3052,6 +3052,7 @@ ul {
 /* About teaser (index.html) */
 .about-teaser-section {
   padding: 72px 0;
+  background: transparent;
 }
 
 .about-teaser-cols {

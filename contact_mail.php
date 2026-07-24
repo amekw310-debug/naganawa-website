@@ -210,7 +210,7 @@ if ($phase === 'send') {
 
     date_default_timezone_set('Asia/Tokyo');
 
-    // メール本文（UTF-8で組み立て。mb_send_mail が ISO-2022-JP へ自動変換）
+    // メール本文（UTF-8で組み立て）
     $mail_body = build_mail_body($data, $column);
 
     // 送信者情報を付加（旧サイト踏襲）
@@ -220,28 +220,29 @@ if ($phase === 'send') {
 
     $visitor_email = htmlspecialchars_decode($data['email']);
 
-    // 管理者宛メール送信
-    // 差出人＝送信者本人のアドレス（旧サイト踏襲。レンタルサーバーから
-    // 自社受信箱へ迷惑メール判定されず確実に届くための設定。返信もそのまま
-    // お客様へ返せる）。件名・本文は mb_send_mail が ISO-2022-JP に自動変換。
-    $headers = "From: {$visitor_email}\r\n"
-             . "Reply-To: {$visitor_email}";
-    $result = mb_send_mail($mailto, $subject, $mail_body, $headers);
+    // 管理者宛メール送信（旧HPと同じ送信方式）
+    // 差出人＝送信者本人のアドレス。本文は ISO-2022-JP(JIS) に明示変換し、
+    // Content-Type も ISO-2022-JP を明示する（旧HPで実績のある方式）。
+    $headers  = "From: {$visitor_email}\r\n";
+    $headers .= "Content-Type: text/plain; charset=ISO-2022-JP";
+    $admin_body = mb_convert_encoding($mail_body, 'ISO-2022-JP', 'UTF-8');
+    $result = mb_send_mail($mailto, $subject, $admin_body, $headers);
 
     if (!$result) {
         header("Location: {$error_url}");
         exit;
     }
 
-    // 自動返信メール送信（差出人＝会社アドレス）
+    // 自動返信メール送信（旧HPと同じ：差出人＝会社アドレス、本文は ISO-2022-JP）
     if ($auto_reply && $visitor_email !== '') {
         $reply_body = str_replace(
             ['{name}', '{mail_body}'],
             [htmlspecialchars_decode($data['name']), $mail_body],
             $auto_reply_body
         );
-        $reply_from    = mb_encode_mimeheader($auto_reply_from_name) . " <{$mailto}>";
-        $reply_headers = "From: {$reply_from}";
+        $reply_body     = mb_convert_encoding($reply_body, 'ISO-2022-JP', 'UTF-8');
+        $reply_headers  = "From: {$mailto}\r\n";
+        $reply_headers .= "Content-Type: text/plain; charset=ISO-2022-JP";
         mb_send_mail($visitor_email, $auto_reply_subject, $reply_body, $reply_headers);
     }
 

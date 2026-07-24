@@ -1,0 +1,217 @@
+@charset "utf-8";
+/* ==========================================================================
+   長縄工務店 旧サイト 応急復旧用スタイル（近似再構築）
+   ※ 2026-07 に旧 style.css が失われたため、旧HTML構造に合わせて暫定作成。
+     月曜の新HP公開までのつなぎ。オリジナルの完全一致ではありません。
+   ========================================================================== */
+
+/* ---------- base ---------- */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
+               "ヒラギノ角ゴ ProN W3", "Yu Gothic", "游ゴシック", Meiryo, sans-serif;
+  color: #2b2b2b;
+  line-height: 1.7;
+  background: #fff;
+}
+img { border: 0; vertical-align: bottom; max-width: 100%; height: auto; }
+a { color: #123f6d; text-decoration: none; transition: color .2s, opacity .2s; }
+a:hover { color: #e8801a; opacity: .85; }
+h1, h2, h3, h4 { margin: 0 0 .6em; line-height: 1.4; font-weight: 700; }
+ul { margin: 0; padding: 0; }
+
+/* responsive helper images used in old html */
+.auto { width: 100%; height: auto; }
+.clearfix::after { content: ""; display: table; clear: both; }
+
+/* pc / mobile visibility (breakpoint 768px, matching Bootstrap md) */
+.pc { display: block; }
+.mobile { display: none; }
+
+/* ---------- header / nav ---------- */
+header {
+  position: relative;
+  background: #fff;
+  border-top: 4px solid #123f6d;
+  box-shadow: 0 2px 6px rgba(0,0,0,.08);
+}
+header > section.container { padding: 12px 15px; }
+header .row { display: flex; align-items: center; flex-wrap: wrap; }
+header h1 { margin: 0; }
+header h1 img { max-height: 62px; width: auto; }
+
+nav.pc { margin-left: auto; }
+nav.pc > ul.list-inline {
+  display: flex; flex-wrap: wrap; align-items: center;
+  justify-content: flex-end; list-style: none;
+}
+nav.pc li.list-inline-item {
+  position: relative; margin: 0; padding: 0 2px;
+}
+nav.pc li.list-inline-item > a {
+  display: block; padding: 10px 12px;
+  color: #2b2b2b; font-weight: 700; font-size: 15px; white-space: nowrap;
+}
+nav.pc li.list-inline-item > a:hover { color: #e8801a; }
+nav.pc li.select > a,
+nav.pc li.list-inline-item.select > a {
+  color: #123f6d; border-bottom: 3px solid #e8801a;
+}
+
+/* hover dropdown submenu */
+nav.pc li.dropdwn .sub_menu {
+  position: absolute; top: 100%; left: 0; z-index: 50;
+  min-width: 220px; list-style: none;
+  background: #fff; border: 1px solid #e3e3e3;
+  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+}
+nav.pc li.dropdwn .sub_menu li { border-bottom: 1px solid #eee; }
+nav.pc li.dropdwn .sub_menu li:last-child { border-bottom: 0; }
+nav.pc li.dropdwn .sub_menu li a { display: block; padding: 11px 16px; font-size: 14px; }
+nav.pc li.dropdwn .sub_menu li a:hover { background: #f4f7fb; color: #123f6d; }
+
+/* ---------- mobile hamburger (checkbox drawer) ---------- */
+nav.mobile { position: relative; }
+.nav-unshown { display: none; }
+#nav-open {
+  display: inline-block; width: 46px; height: 46px; vertical-align: middle;
+  position: absolute; right: 12px; top: -54px; cursor: pointer; z-index: 1002;
+}
+#nav-open span, #nav-open span::before, #nav-open span::after {
+  position: absolute; height: 3px; width: 26px; left: 10px;
+  background: #123f6d; border-radius: 2px; display: block; content: '';
+  transition: .3s ease-in-out;
+}
+#nav-open span { top: 22px; }
+#nav-open span::before { bottom: 8px; }
+#nav-open span::after  { top: 8px; }
+#nav-close {
+  display: none; position: fixed; z-index: 1000; inset: 0;
+  background: rgba(0,0,0,.4); opacity: 0; transition: .3s;
+}
+#nav-content {
+  overflow: auto; -webkit-overflow-scrolling: touch;
+  position: fixed; top: 0; left: 0; z-index: 1001;
+  width: 78%; max-width: 320px; height: 100%;
+  background: #fff; box-shadow: 3px 0 12px rgba(0,0,0,.2);
+  transform: translateX(-105%); transition: transform .3s ease-in-out;
+  padding: 24px 18px;
+}
+#nav-content ul { list-style: none; }
+#nav-content li a { display: block; padding: 13px 6px; border-bottom: 1px solid #eee; color: #2b2b2b; font-weight: 700; }
+#nav-content li ul li a { padding-left: 22px; font-weight: 400; font-size: 14px; color: #555; }
+#nav-input:checked ~ #nav-close { display: block; opacity: 1; }
+#nav-input:checked ~ #nav-content { transform: none; }
+
+/* ---------- homepage slideshow (top_box01) ---------- */
+.top_box01 { position: relative; background: #0c1c2e; }
+.top_box01 .slide {
+  position: relative; width: 100%; min-height: 78vh; overflow: hidden;
+  display: none; align-items: center; justify-content: center; text-align: center;
+  flex-direction: column;
+}
+.top_box01 #page01 { display: flex; }
+.top_box01 .slide .bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: 0;
+}
+.top_box01 .slide::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: rgba(0,0,0,.18);
+}
+.top_box01 .slide .box01,
+.top_box01 .slide .box02,
+.top_box01 .slide .box03 {
+  position: relative; z-index: 2; max-width: 90%; margin: 14px auto;
+}
+.top_box01 .slide .box01 img,
+.top_box01 .slide .box02 img,
+.top_box01 .slide .box03 img { max-width: 100%; height: auto; }
+.top_box01 .slide .next,
+.top_box01 .slide .prev { position: relative; z-index: 2; margin: 18px auto 0; }
+.top_box01 .slide .next img,
+.top_box01 .slide .prev img { width: 54px; cursor: pointer; opacity: .9; }
+.top_box01 .slide .box02 ul.list-inline { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; list-style: none; }
+
+/* ---------- sub page title banner ---------- */
+main.sub { display: block; }
+.box_title {
+  position: relative; background-size: cover; background-position: center;
+  background-color: #123f6d; min-height: 190px;
+  display: flex; align-items: center;
+}
+.box_title::before {
+  content: ""; position: absolute; inset: 0; background: rgba(10,28,46,.5);
+}
+.box_title h2 {
+  position: relative; color: #fff; font-size: 30px; margin: 0;
+  padding: 40px 15px; width: 100%; text-shadow: 0 2px 6px rgba(0,0,0,.4);
+}
+
+/* breadcrumb (Bootstrap provides base; light tweak) */
+.breadcrumb { background: transparent; padding: 14px 0; margin: 0; font-size: 13px; color: #777; list-style: none; display: flex; flex-wrap: wrap; }
+.breadcrumb li { margin-right: 4px; }
+
+/* ---------- content sections ---------- */
+main { display: block; }
+section.container { max-width: 1080px; margin: 0 auto; padding-left: 15px; padding-right: 15px; }
+.company_box01, .box01_wrap { padding: 26px 15px 40px; }
+main h3 {
+  font-size: 22px; color: #123f6d; margin: 30px 0 18px;
+  padding: 8px 0 8px 14px; border-left: 6px solid #e8801a;
+}
+.anchor { display: block; position: relative; top: -80px; visibility: hidden; }
+.row.pic { display: flex; flex-wrap: wrap; gap: 16px; margin: 0 0 22px; }
+.row.pic figure { margin: 0; flex: 1 1 240px; }
+.row.pic figure img { width: 100%; height: auto; border-radius: 4px; }
+
+/* tables */
+.tbl01 { overflow-x: auto; }
+.tbl01 table.table, table.table {
+  width: 100%; border-collapse: collapse; margin: 0 0 24px; background: #fff;
+}
+table.table th, table.table td {
+  border: 1px solid #d8dee6; padding: 12px 14px; text-align: left; vertical-align: top; font-size: 15px;
+}
+table.table th {
+  background: #123f6d; color: #fff; font-weight: 700; white-space: nowrap; width: 26%; min-width: 120px;
+}
+table.table tr:nth-child(even) td { background: #f6f8fb; }
+
+/* ---------- footer ---------- */
+footer {
+  margin-top: 40px; background: #14181d; color: #cfd4da; padding: 34px 0 0;
+}
+footer .container { max-width: 1080px; margin: 0 auto; padding: 0 15px; }
+footer .row { display: flex; flex-wrap: wrap; gap: 20px; }
+footer .col-md-4 { flex: 1 1 300px; }
+footer .col-md-3 { flex: 0 1 220px; }
+footer .col-md-5 { flex: 1 1 120px; }
+footer h2 img { max-width: 200px; height: auto; background: #fff; padding: 8px 12px; border-radius: 4px; }
+footer p { font-size: 14px; line-height: 1.9; }
+footer a { color: #9fc0e6; }
+footer .copy { text-align: center; font-size: 12px; color: #8b939c; padding: 18px 0; margin-top: 18px; border-top: 1px solid #2a3038; }
+footer .buildings { text-align: center; }
+footer .buildings img { max-width: 100%; }
+
+/* page top button */
+.page_top { position: fixed; right: 16px; bottom: 16px; z-index: 900; }
+.page_top img { width: 52px; height: auto; opacity: .85; }
+.page_top img:hover { opacity: 1; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 767.98px) {
+  .pc { display: none !important; }
+  .mobile { display: block !important; }
+  header .row { justify-content: space-between; }
+  header h1 img { max-height: 50px; }
+  .box_title h2 { font-size: 22px; padding: 30px 15px; }
+  .top_box01 .slide { min-height: 62vh; }
+  table.table th { width: 34%; min-width: 96px; }
+  footer .row { flex-direction: column; }
+}
+@media (min-width: 768px) {
+  .mobile { display: none !important; }
+}

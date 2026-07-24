@@ -197,47 +197,41 @@ if ($phase === 'send') {
         exit;
     }
 
+    date_default_timezone_set('Asia/Tokyo');
+
+    // メール本文（UTF-8で組み立て。mb_send_mail が ISO-2022-JP へ自動変換）
     $mail_body = build_mail_body($data, $column);
 
+    // 送信者情報を付加（旧サイト踏襲）
+    $mail_body .= "\n----------------------------------------\n";
+    $mail_body .= "送信日時：" . date("Y-m-d H:i:s") . "\n";
+    $mail_body .= "送信元IP：" . (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '') . "\n";
+
+    $visitor_email = htmlspecialchars_decode($data['email']);
+
     // 管理者宛メール送信
-    $to      = $mailto;
-    $enc_sub = mb_encode_mimeheader($subject, 'UTF-8', 'B');
-    $enc_from_name = mb_encode_mimeheader($from_name, 'UTF-8', 'B');
-    $headers = implode("\r\n", [
-        "From: {$enc_from_name} <{$mailto}>",
-        "Reply-To: " . htmlspecialchars_decode($data['email']),
-        "MIME-Version: 1.0",
-        "Content-Type: text/plain; charset=UTF-8",
-        "Content-Transfer-Encoding: base64",
-    ]);
-    $body_encoded = base64_encode($mail_body);
-    $result = mb_send_mail($to, $enc_sub, $body_encoded, $headers);
+    // 差出人＝送信者本人のアドレス（旧サイト踏襲。レンタルサーバーから
+    // 自社受信箱へ迷惑メール判定されず確実に届くための設定。返信もそのまま
+    // お客様へ返せる）。件名・本文は mb_send_mail が ISO-2022-JP に自動変換。
+    $headers = "From: {$visitor_email}\r\n"
+             . "Reply-To: {$visitor_email}";
+    $result = mb_send_mail($mailto, $subject, $mail_body, $headers);
 
     if (!$result) {
         header("Location: {$error_url}");
         exit;
     }
 
-    // 自動返信メール送信
-    if ($auto_reply && $data['email'] !== '') {
+    // 自動返信メール送信（差出人＝会社アドレス）
+    if ($auto_reply && $visitor_email !== '') {
         $reply_body = str_replace(
             ['{name}', '{mail_body}'],
             [htmlspecialchars_decode($data['name']), $mail_body],
             $auto_reply_body
         );
-        $enc_reply_sub = mb_encode_mimeheader($auto_reply_subject, 'UTF-8', 'B');
-        $reply_headers = implode("\r\n", [
-            "From: {$auto_reply_from}",
-            "MIME-Version: 1.0",
-            "Content-Type: text/plain; charset=UTF-8",
-            "Content-Transfer-Encoding: base64",
-        ]);
-        mb_send_mail(
-            htmlspecialchars_decode($data['email']),
-            $enc_reply_sub,
-            base64_encode($reply_body),
-            $reply_headers
-        );
+        $reply_from    = mb_encode_mimeheader($auto_reply_from_name) . " <{$mailto}>";
+        $reply_headers = "From: {$reply_from}";
+        mb_send_mail($visitor_email, $auto_reply_subject, $reply_body, $reply_headers);
     }
 
     header("Location: {$thanks_url}");

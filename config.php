@@ -9,13 +9,15 @@ $mailto = "naganawa.com@ace.ocn.ne.jp";
 // 件名
 $subject = "ホームページからのお問い合わせ";
 
-// 差出人表示名（管理者宛メール）
-$from_name = "長縄工務店 ウェブサイト";
+// 管理者宛メールの差出人は「送信者本人のアドレス」を使用します。
+// （旧サイト踏襲。レンタルサーバーから自社受信箱へ迷惑メール判定されず
+//   確実に届けるための設定のため、ここでは固定の差出人名は使いません）
 
 // 自動返信メール設定
 $auto_reply        = true;
 $auto_reply_subject = "お問い合わせありがとうございます【株式会社 長縄工務店】";
-$auto_reply_from   = "長縄工務店 <naganawa.com@ace.ocn.ne.jp>";
+// 自動返信メールの差出人表示名（アドレスは $mailto を使用）
+$auto_reply_from_name = "株式会社 長縄工務店";
 $auto_reply_body   = <<<EOT
 {name} 様
 

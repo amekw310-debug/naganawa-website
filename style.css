@@ -3053,23 +3053,6 @@ ul {
 .about-teaser-section {
   padding: 72px 0;
   background: transparent;
-  position: relative;
-}
-
-.about-teaser-section::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url("images/logo.png") no-repeat center;
-  background-size: 380px auto;
-  opacity: 0.08;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.about-teaser-section > .inner {
-  position: relative;
-  z-index: 1;
 }
 
 .about-teaser-cols {

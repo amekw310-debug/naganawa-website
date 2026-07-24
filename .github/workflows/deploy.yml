@@ -7,9 +7,11 @@ name: Deploy to CANONET (FTP)
 #   FTP_PASSWORD … FTPパスワード
 # 手動実行（Actions タブ → Run workflow）も可能です。
 
+# 【一時停止中】月曜のリニューアル確認まで、push による自動デプロイを止めています。
+# 再開するときは下の push: ブロックのコメントを外してください。
 on:
-  push:
-    branches: [main]
+  # push:
+  #   branches: [main]
   workflow_dispatch:
 
 jobs:

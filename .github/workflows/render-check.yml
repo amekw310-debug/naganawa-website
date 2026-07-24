@@ -1,0 +1,88 @@
+name: Render check old HP
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y lftp
+      - name: Download old html
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          OPT="set ftp:ssl-allow false; set ftp:passive-mode true;"
+          mkdir -p render
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "$OPT get /htdocs/index.html.old0614 -o render/index_src.html; get /htdocs/company.html -o render/company_src.html; get /htdocs/business.html.old0614 -o render/business_src.html; bye" 2>/dev/null
+          ls -la render/
+      - name: Build test html (base href + inline reconstructed css)
+        run: |
+          python3 - <<'PY'
+          import re
+          css = open('restore-assets/style.css', encoding='utf-8').read()
+          base = '<base href="https://naganawa-k.co.jp/">'
+          style = '<style>\n'+css+'\n</style>'
+          for src,out in [('render/index_src.html','render/test_index.html'),
+                          ('render/company_src.html','render/test_company.html'),
+                          ('render/business_src.html','render/test_business.html')]:
+              h = open(src, encoding='utf-8', errors='ignore').read()
+              # insert base right after <head>
+              h = re.sub(r'(<head[^>]*>)', r'\1\n'+base, h, count=1)
+              # remove the local style.css link
+              h = re.sub(r'<link[^>]*href="style\.css"[^>]*>', '', h)
+              # inline our css before </head>
+              h = h.replace('</head>', style+'\n</head>', 1)
+              open(out,'w',encoding='utf-8').write(h)
+              print('built', out, len(h))
+          PY
+      - name: Setup playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm i playwright@1.56.1 >/dev/null 2>&1
+          npx playwright install --with-deps chromium
+      - name: Render screenshots
+        run: |
+          cat > shot.js <<'JS'
+          const { chromium } = require('playwright');
+          (async () => {
+            const b = await chromium.launch();
+            const pages = [['render/test_index.html','index'],['render/test_company.html','company'],['render/test_business.html','business']];
+            for (const [file,name] of pages) {
+              const url = 'file://'+process.cwd()+'/'+file;
+              const pc = await b.newPage({ viewport:{width:1280,height:900} });
+              await pc.goto(url,{waitUntil:'load',timeout:90000}).catch(()=>{});
+              await pc.waitForTimeout(3500);
+              await pc.screenshot({path:name+'_pc.jpg', type:'jpeg', quality:72, fullPage:true});
+              await pc.close();
+              const sp = await b.newPage({ viewport:{width:390,height:820}, isMobile:true, deviceScaleFactor:2 });
+              await sp.goto(url,{waitUntil:'load',timeout:90000}).catch(()=>{});
+              await sp.waitForTimeout(3500);
+              await sp.screenshot({path:name+'_sp.jpg', type:'jpeg', quality:72, fullPage:true});
+              await sp.close();
+              console.log('shot', name);
+            }
+            await b.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node shot.js
+          ls -la *.jpg
+      - name: Encode + commit
+        run: |
+          mkdir -p shots
+          for f in index company business; do
+            for v in pc sp; do
+              base64 -w0 ${f}_${v}.jpg > shots/${f}_${v}.jpg.b64.txt
+              cp ${f}_${v}.jpg shots/${f}_${v}.jpg
+            done
+          done
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git checkout -B oldhp-render
+          git add -f shots/
+          git commit -m "render: 再構築CSSのスクショ"
+          git push -f origin oldhp-render

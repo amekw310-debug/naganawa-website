@@ -1,0 +1,37 @@
+name: Deploy to CANONET (FTP)
+
+# main への push で naganawa-k.co.jp（CANONET）へ自動デプロイします。
+# 認証情報はコードに書かず、GitHub の Secrets を参照します:
+#   FTP_SERVER   … 例: ftp.naganawa-k.co.jp
+#   FTP_USERNAME … FTPアカウント
+#   FTP_PASSWORD … FTPパスワード
+# 手動実行（Actions タブ → Run workflow）も可能です。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # 公開ディレクトリ。手動アップロード時にファイルを置いている
+          # サーバー上のフォルダに合わせてください（例: ./ , ./public_html/ , ./www/ , ./htdocs/ ）。
+          server-dir: ./
+          # 開発用ファイルはサーバーに送りません。
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            README.md
+            **/.DS_Store

@@ -27,7 +27,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           # 公開ディレクトリ。手動アップロード時にファイルを置いている
           # サーバー上のフォルダに合わせてください（例: ./ , ./public_html/ , ./www/ , ./htdocs/ ）。
-          server-dir: ./
+          server-dir: ./htdocs/
           # 開発用ファイルはサーバーに送りません。
           exclude: |
             **/.git*

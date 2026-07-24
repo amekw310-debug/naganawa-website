@@ -1,0 +1,38 @@
+name: Find Tayori embed on server
+
+# 一時診断用。サーバー上のHTML/PHPから "tayori" を含む箇所（埋め込みコード）を探す。
+on:
+  workflow_dispatch:
+
+jobs:
+  find:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y lftp
+
+      - name: Search server files for "tayori"
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          OPT="set ftp:ssl-allow false; set ftp:passive-mode true;"
+          echo "===== listing html/htm/php files under / ====="
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" \
+            -e "$OPT find /; bye" 2>/dev/null | grep -iE '\.(s?html?|php|htm)$' > files.txt || true
+          echo "total files: $(wc -l < files.txt)"
+          cat files.txt
+          echo ""
+          echo "===== scanning each file for 'tayori' ====="
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            content=$(lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "$OPT cat \"$f\"; bye" 2>/dev/null)
+            if printf '%s' "$content" | grep -qi 'tayori'; then
+              echo ""
+              echo "########## FOUND 'tayori' in: $f ##########"
+              printf '%s' "$content" | grep -in 'tayori' | head -40
+            fi
+          done < files.txt
+          echo ""
+          echo "===== scan complete ====="

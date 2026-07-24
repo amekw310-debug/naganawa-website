@@ -1,0 +1,67 @@
+name: Restore old HP (temporary)
+on:
+  workflow_dispatch:
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y lftp
+      - name: Restore
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          set -e
+          OPT="set ftp:ssl-allow false; set ftp:passive-mode true;"
+          L() { lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "$OPT $1; bye" 2>/dev/null; }
+          catf() { L "cat $1"; }
+
+          echo "===== 1) safety guard: backups must be OLD (no GA) ====="
+          for b in index.html.old0614 business.html.old0614 technology.html.old0614; do
+            c=$(catf /htdocs/$b)
+            if [ -z "$c" ]; then echo "ABORT: /htdocs/$b not found"; exit 1; fi
+            if printf '%s' "$c" | grep -q 'G-54DCFCLL2R'; then echo "ABORT: $b looks NEW (GA found)"; exit 1; fi
+            printf '%s' "$c" | grep -qi 'list-inline-item' && echo "  OK old: $b" || { echo "ABORT: $b missing old marker"; exit 1; }
+          done
+
+          echo "===== 2) upload reconstructed style.css ====="
+          L "put restore-assets/style.css -o /htdocs/style.css"
+
+          echo "===== 3) restore old HTML from backups ====="
+          mkdir -p work
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "$OPT
+            get /htdocs/index.html.old0614      -o work/index.html;      put work/index.html      -o /htdocs/index.html;
+            get /htdocs/business.html.old0614   -o work/business.html;   put work/business.html   -o /htdocs/business.html;
+            get /htdocs/technology.html.old0614 -o work/technology.html; put work/technology.html -o /htdocs/technology.html;
+            bye" 2>/dev/null
+          echo "  restored index/business/technology"
+
+          echo "===== 4) old-styled contact.html (Tayori) ====="
+          L "put restore-assets/contact.html -o /htdocs/contact.html"
+
+          echo "===== 5) hide new-HP-only files ====="
+          L "mkdir -f /htdocs/_newhp_hidden" || true
+          for f in about.html recruit.html contact_confirm.html contact_error.html contact_thanks.html contact_mail.php; do
+            L "mv /htdocs/$f /htdocs/_newhp_hidden/$f" 2>/dev/null && echo "  hid $f" || echo "  (skip $f)"
+          done
+          L "mv /htdocs/news /htdocs/_newhp_hidden/news" 2>/dev/null && echo "  hid news/" || echo "  (skip news/)"
+
+          echo "===== 6) clear stale FTP sync-state (for clean Monday redeploy) ====="
+          L "rm -f /htdocs/.ftp-deploy-sync-state.json" 2>/dev/null && echo "  removed sync-state" || echo "  (no sync-state)"
+
+          echo ""
+          echo "===== VERIFY ====="
+          echo "-- index.html:"
+          ic=$(catf /htdocs/index.html)
+          printf '%s' "$ic" | grep -io '<title>[^<]*</title>' | head -1
+          printf '%s' "$ic" | grep -q 'G-54DCFCLL2R' && echo "   [!] GA present (unexpected)" || echo "   GAなし=旧HP OK"
+          printf '%s' "$ic" | grep -qi 'list-inline-item' && echo "   list-inline-item=旧HP OK"
+          echo "-- contact.html:"
+          printf '%s' "$(catf /htdocs/contact.html)" | grep -io '<title>[^<]*</title>' | head -1
+          echo "-- style.css head:"
+          catf /htdocs/style.css | head -3
+          echo "-- /htdocs listing:"
+          L "cls -l /htdocs/" | head -50

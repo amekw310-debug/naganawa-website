@@ -1,0 +1,43 @@
+name: Preview (GitHub Pages)
+
+# 新HPの「プレビュー専用」。github.io の別URLに配信します。
+# 本番（naganawa-k.co.jp / CANONET FTP）とは完全に別で、影響しません。
+# main に push すると自動でプレビューが更新されます。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-preview
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Prepare preview (exclude workflow files)
+        run: |
+          mkdir -p _site
+          # リポジトリ直下をコピー（.git や .github は除外）
+          rsync -a --exclude='.git' --exclude='.github' --exclude='_site' ./ _site/
+          # 検索避け（プレビューがインデックスされないように）
+          printf 'User-agent: *\nDisallow: /\n' > _site/robots.txt
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+      - id: deployment
+        uses: actions/deploy-pages@v4

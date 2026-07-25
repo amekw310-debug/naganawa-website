@@ -1,0 +1,48 @@
+name: Preview shot
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  shot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm i playwright@1.56.1 >/dev/null 2>&1
+          npx playwright install --with-deps chromium
+      - name: Shoot preview
+        run: |
+          cat > s.js <<'JS'
+          const { chromium } = require('playwright');
+          (async () => {
+            const b = await chromium.launch();
+            const base='https://amekw310-debug.github.io/naganawa-website/';
+            const pages=[['','index'],['about.html','about'],['recruit.html','recruit']];
+            for (const [p,name] of pages){
+              const pg=await b.newPage({viewport:{width:1280,height:900}});
+              await pg.goto(base+p+'?cb='+Date.now(),{waitUntil:'load',timeout:90000}).catch(e=>console.log('err',name,e.message));
+              await pg.waitForTimeout(4500);
+              await pg.screenshot({path:name+'_pc.jpg',type:'jpeg',quality:70,fullPage:true});
+              await pg.close(); console.log('shot',name);
+            }
+            const sp=await b.newPage({viewport:{width:390,height:820},isMobile:true,deviceScaleFactor:2});
+            await sp.goto(base+'?cb='+Date.now(),{waitUntil:'load',timeout:90000}).catch(()=>{});
+            await sp.waitForTimeout(4500);
+            await sp.screenshot({path:'index_sp.jpg',type:'jpeg',quality:70,fullPage:true});
+            await b.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node s.js
+          ls -la *.jpg
+      - name: Encode + commit
+        run: |
+          mkdir -p pv
+          for f in index_pc about_pc recruit_pc index_sp; do base64 -w0 ${f}.jpg > pv/${f}.b64.txt; done
+          git config user.name "github-actions"; git config user.email "actions@github.com"
+          git checkout -B preview-shot
+          git add -f pv/
+          git commit -m "preview shots"
+          git push -f origin preview-shot

@@ -74,20 +74,18 @@
           下記フォームに必要事項をご入力のうえ、送信してください。<br>
           工事のご相談・お見積り・採用に関するご質問など、お気軽にお問い合わせください。
         </p>
-        <!-- お問い合わせフォーム（Tayori） -->
-        <div class="tayori-form-wrap">
+        <!-- お問い合わせフォーム（Tayori 埋め込み・ページ内で送信可）
+             上部のTayoriヘッダー（ロゴ画像＝クリックで外部遷移）はラッパーの overflow:hidden と
+             iframe の負マージンで隠しています。切り取り量は --tayori-crop で調整可能。 -->
+        <div class="tayori-form-wrap"
+             style="--tayori-crop:150px; max-width:680px; margin:0 auto; overflow:hidden; border-radius:var(--radius); box-shadow:0 6px 24px rgba(0,0,0,.08); background:#fff;">
           <iframe
             src="https://tayori.com/form/c1701305e9a038310e9f49c89b76732440d2cf3f/"
             title="お問い合わせフォーム"
             loading="lazy"
-            style="width:100%;min-height:1150px;border:0;background:#fff;border-radius:var(--radius);"
+            style="width:100%; height:1500px; border:0; background:#fff; display:block; margin-top:calc(var(--tayori-crop) * -1);"
           ></iframe>
         </div>
-        <p class="form-note" style="text-align:center;margin-top:16px;">
-          ※ フォームが表示されない場合は
-          <a href="https://tayori.com/form/c1701305e9a038310e9f49c89b76732440d2cf3f/" target="_blank" rel="noopener" style="color:var(--navy);text-decoration:underline;">こちらのお問い合わせフォーム</a>
-          から直接ご入力ください。
-        </p>
       </div>
     </div>
   </section>

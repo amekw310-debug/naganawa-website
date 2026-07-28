@@ -6,9 +6,23 @@
 
 require_once('config.php');
 
-// 文字コード設定
+// 文字コード設定（件名・本文の日本語を文字化けさせないため）
 mb_language("Japanese");
 mb_internal_encoding("UTF-8");
+
+// ----------------------------------------
+// エラーログ出力（送信失敗の原因調査用）
+// ※個人情報（本文・お客様のアドレス等）は記録しません。
+//   宛先・送信可否・PHPエラー内容など技術情報のみ記録します。
+// ----------------------------------------
+function log_mail($message) {
+    global $error_log_file;
+    $line = "[" . date("Y-m-d H:i:s") . "] " . $message . "\n";
+    error_log("contact_mail: " . $message);
+    if (!empty($error_log_file)) {
+        @file_put_contents($error_log_file, $line, FILE_APPEND | LOCK_EX);
+    }
+}
 
 $phase = isset($_POST['phase']) ? $_POST['phase'] : '';
 
@@ -16,9 +30,9 @@ $phase = isset($_POST['phase']) ? $_POST['phase'] : '';
 // スパム対策（ハニーポット）
 // 入力フォームに人間には見えない項目 "website" を置いています。
 // bot はこれを自動入力しがちなので、値が入っていれば送信せず破棄します。
-// （正規ユーザーには影響しません）
 // ----------------------------------------
 if (!empty($_POST['website'])) {
+    log_mail("ハニーポット検知のため破棄しました（bot判定）。");
     header("Location: {$thanks_url}");
     exit;
 }
@@ -54,15 +68,15 @@ function validate($data, $required, $column) {
 }
 
 // ----------------------------------------
-// メール本文生成
+// メール本文生成（項目を分かりやすく整形）
 // ----------------------------------------
 function build_mail_body($data, $column) {
     $body = '';
     foreach ($column as $key => $label) {
         $val = $data[$key] !== '' ? htmlspecialchars_decode($data[$key]) : '（未入力）';
-        $body .= "{$label}：{$val}\n";
+        $body .= "【{$label}】\n{$val}\n\n";
     }
-    return $body;
+    return rtrim($body) . "\n";
 }
 
 // ----------------------------------------
@@ -73,14 +87,12 @@ if ($phase === 'check') {
 
     if (!empty($errors)) {
         // エラーがある場合はエラーページへ
-        $_SESSION_ERRORS = $errors; // セッション不使用のためURLパラメータで渡す
         $params = http_build_query(['errors' => implode('|', $errors)]);
         header("Location: {$error_url}?{$params}");
         exit;
     }
 
     // 確認画面を出力（サイトデザインに合わせたHTML）
-    // ハニーポットの値も引き継ぐ（送信フェーズでも判定できるように）
     $hidden_fields = '';
     foreach ($column as $key => $label) {
         $hidden_fields .= '<input type="hidden" name="' . $key . '" value="' . $data[$key] . '">' . "\n";
@@ -217,41 +229,53 @@ if ($phase === 'send') {
     $errors = validate($data, $required, $column);
 
     if (!empty($errors)) {
+        log_mail("送信フェーズでバリデーションエラー: " . implode(' / ', $errors));
         header("Location: {$error_url}");
         exit;
     }
 
     date_default_timezone_set('Asia/Tokyo');
 
-    // メール本文（UTF-8で組み立て）
-    $mail_body = build_mail_body($data, $column);
+    // --- 件名を動的生成（お名前を挿入）---
+    $name_for_subject = htmlspecialchars_decode($data['name']);
+    if ($name_for_subject === '') { $name_for_subject = 'お客様'; }
+    $subject = str_replace('{name}', $name_for_subject, $subject_template);
 
-    // 送信者情報を付加（旧サイト踏襲）
+    // --- 本文（整形）---
+    $mail_body = build_mail_body($data, $column);
     $mail_body .= "\n----------------------------------------\n";
     $mail_body .= "送信日時：" . date("Y-m-d H:i:s") . "\n";
     $mail_body .= "送信元IP：" . (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '') . "\n";
 
     $visitor_email = htmlspecialchars_decode($data['email']);
 
-    // --- 管理者宛メール送信（到達性重視の設定）---
-    // From＝自社ドメイン($mailfrom)。訪問者アドレスは Reply-To に入れる。
-    // エンベロープFrom(-f)も$mailfromにしてSPF認証を通しやすくする。
-    // 本文・ヘッダの日本語は ISO-2022-JP に明示変換（旧HPで実績のある方式）。
+    // 管理者宛メール本文（冒頭に案内文を付与）
+    $admin_text  = "ホームページのお問い合わせフォームより、以下のお問い合わせがありました。\n";
+    $admin_text .= "お客様への返信は、このメールにそのまま「返信」してください（返信先＝お客様のアドレス）。\n\n";
+    $admin_text .= $mail_body;
+
+    // --- 管理者宛メール送信 ---
+    // From＝会社アドレス($mailfrom)。お客様アドレスは Reply-To に設定（なりすまし・迷惑対策）。
+    // 件名・本文・差出人名は ISO-2022-JP に変換し、文字化けを防止。
     $headers  = "From: " . mb_encode_mimeheader($mailfrom_name) . " <{$mailfrom}>\r\n";
     if ($visitor_email !== '') {
         $headers .= "Reply-To: {$visitor_email}\r\n";
     }
     $headers .= "Content-Type: text/plain; charset=ISO-2022-JP";
-    $admin_body = mb_convert_encoding($mail_body, 'ISO-2022-JP', 'UTF-8');
-    $result = mb_send_mail($mailto, $subject, $admin_body, $headers, "-f {$mailfrom}");
+
+    $admin_body = mb_convert_encoding($admin_text, 'ISO-2022-JP', 'UTF-8');
+    $result = @mb_send_mail($mailto, $subject, $admin_body, $headers);
 
     if (!$result) {
+        $last = error_get_last();
+        log_mail("NG: 管理者宛メール送信に失敗しました。to={$mailto} from={$mailfrom} PHPエラー=" . ($last ? $last['message'] : '不明'));
         header("Location: {$error_url}");
         exit;
     }
+    log_mail("OK: 管理者宛メール送信成功。to={$mailto}");
 
-    // --- 自動返信メール送信（到達性重視の設定）---
-    // From＝自社ドメイン($mailfrom)＋会社名表示。返信先は会社受信箱($mailto)。
+    // --- 自動返信メール送信（お客様宛）---
+    // From＝会社アドレス($mailfrom)＋会社名。返信先は会社受信箱($mailto)。
     if ($auto_reply && $visitor_email !== '') {
         $reply_body = str_replace(
             ['{name}', '{mail_body}'],
@@ -262,7 +286,15 @@ if ($phase === 'send') {
         $reply_headers  = "From: " . mb_encode_mimeheader($auto_reply_from_name) . " <{$mailfrom}>\r\n";
         $reply_headers .= "Reply-To: {$mailto}\r\n";
         $reply_headers .= "Content-Type: text/plain; charset=ISO-2022-JP";
-        mb_send_mail($visitor_email, $auto_reply_subject, $reply_body, $reply_headers, "-f {$mailfrom}");
+
+        $reply_result = @mb_send_mail($visitor_email, $auto_reply_subject, $reply_body, $reply_headers);
+        if (!$reply_result) {
+            $last = error_get_last();
+            // 自動返信の失敗は致命的ではないため、記録のみ行い処理は継続
+            log_mail("WARN: 自動返信メール送信に失敗しました。PHPエラー=" . ($last ? $last['message'] : '不明'));
+        } else {
+            log_mail("OK: 自動返信メール送信成功。");
+        }
     }
 
     header("Location: {$thanks_url}");

@@ -13,6 +13,17 @@ mb_internal_encoding("UTF-8");
 $phase = isset($_POST['phase']) ? $_POST['phase'] : '';
 
 // ----------------------------------------
+// スパム対策（ハニーポット）
+// 入力フォームに人間には見えない項目 "website" を置いています。
+// bot はこれを自動入力しがちなので、値が入っていれば送信せず破棄します。
+// （正規ユーザーには影響しません）
+// ----------------------------------------
+if (!empty($_POST['website'])) {
+    header("Location: {$thanks_url}");
+    exit;
+}
+
+// ----------------------------------------
 // 入力値の取得・サニタイズ
 // ----------------------------------------
 $data = [];
@@ -69,6 +80,7 @@ if ($phase === 'check') {
     }
 
     // 確認画面を出力（サイトデザインに合わせたHTML）
+    // ハニーポットの値も引き継ぐ（送信フェーズでも判定できるように）
     $hidden_fields = '';
     foreach ($column as $key => $label) {
         $hidden_fields .= '<input type="hidden" name="' . $key . '" value="' . $data[$key] . '">' . "\n";
@@ -86,6 +98,7 @@ if ($phase === 'check') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="images/favicon.png" type="image/png">
   <title>入力内容の確認｜長縄工務店</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -220,20 +233,25 @@ if ($phase === 'send') {
 
     $visitor_email = htmlspecialchars_decode($data['email']);
 
-    // 管理者宛メール送信（旧HPと同じ送信方式）
-    // 差出人＝送信者本人のアドレス。本文は ISO-2022-JP(JIS) に明示変換し、
-    // Content-Type も ISO-2022-JP を明示する（旧HPで実績のある方式）。
-    $headers  = "From: {$visitor_email}\r\n";
+    // --- 管理者宛メール送信（到達性重視の設定）---
+    // From＝自社ドメイン($mailfrom)。訪問者アドレスは Reply-To に入れる。
+    // エンベロープFrom(-f)も$mailfromにしてSPF認証を通しやすくする。
+    // 本文・ヘッダの日本語は ISO-2022-JP に明示変換（旧HPで実績のある方式）。
+    $headers  = "From: " . mb_encode_mimeheader($mailfrom_name) . " <{$mailfrom}>\r\n";
+    if ($visitor_email !== '') {
+        $headers .= "Reply-To: {$visitor_email}\r\n";
+    }
     $headers .= "Content-Type: text/plain; charset=ISO-2022-JP";
     $admin_body = mb_convert_encoding($mail_body, 'ISO-2022-JP', 'UTF-8');
-    $result = mb_send_mail($mailto, $subject, $admin_body, $headers);
+    $result = mb_send_mail($mailto, $subject, $admin_body, $headers, "-f {$mailfrom}");
 
     if (!$result) {
         header("Location: {$error_url}");
         exit;
     }
 
-    // 自動返信メール送信（旧HPと同じ：差出人＝会社アドレス、本文は ISO-2022-JP）
+    // --- 自動返信メール送信（到達性重視の設定）---
+    // From＝自社ドメイン($mailfrom)＋会社名表示。返信先は会社受信箱($mailto)。
     if ($auto_reply && $visitor_email !== '') {
         $reply_body = str_replace(
             ['{name}', '{mail_body}'],
@@ -241,9 +259,10 @@ if ($phase === 'send') {
             $auto_reply_body
         );
         $reply_body     = mb_convert_encoding($reply_body, 'ISO-2022-JP', 'UTF-8');
-        $reply_headers  = "From: {$mailto}\r\n";
+        $reply_headers  = "From: " . mb_encode_mimeheader($auto_reply_from_name) . " <{$mailfrom}>\r\n";
+        $reply_headers .= "Reply-To: {$mailto}\r\n";
         $reply_headers .= "Content-Type: text/plain; charset=ISO-2022-JP";
-        mb_send_mail($visitor_email, $auto_reply_subject, $reply_body, $reply_headers);
+        mb_send_mail($visitor_email, $auto_reply_subject, $reply_body, $reply_headers, "-f {$mailfrom}");
     }
 
     header("Location: {$thanks_url}");

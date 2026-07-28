@@ -27,23 +27,44 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=7">
   <style>
-    /* お問い合わせフォーム（Tayori 埋め込み）
-       - 上部のTayoriヘッダー画像（クリックで外部遷移）と "Powered by Tayori" 帯は
-         --tayori-crop 分だけ上に隠しています。
-       - iframe 内スクロールを出さず、フォーム全体が一度に収まる高さに設定。
-       - 外側にカード(影・枠)は付けず、ページ背景に溶け込ませています。 */
-    .tayori-form-wrap { --tayori-crop: 180px; overflow: hidden; }
-    .tayori-form-wrap iframe {
+    /* お問い合わせフォーム（自作・サイトデザインに統一） */
+    .contact-form { max-width: 680px; margin: 0 auto; }
+    .contact-form .field { margin-bottom: 24px; }
+    .contact-form label { display: block; font-weight: 700; font-size: 15px; margin-bottom: 8px; color: var(--navy, #17233d); }
+    .contact-form .req,
+    .contact-form .any { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
+    .contact-form .req { background: #e11d48; color: #fff; }
+    .contact-form .any { background: #e5e7eb; color: #4b5563; }
+    .contact-form input[type="text"],
+    .contact-form input[type="tel"],
+    .contact-form input[type="email"],
+    .contact-form select,
+    .contact-form textarea {
       width: 100%;
-      height: 980px;                 /* PC：フォーム全体が収まる高さ */
-      border: 0;
-      background: transparent;
-      display: block;
-      margin-top: calc(var(--tayori-crop) * -1);
+      padding: 13px 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 16px;
+      font-family: inherit;
+      color: #1f2937;
+      background: #fff;
+      box-sizing: border-box;
+      transition: border-color .2s, box-shadow .2s;
     }
-    @media (max-width: 600px) {
-      .tayori-form-wrap iframe { height: 1180px; }   /* スマホ：やや高めに */
+    .contact-form textarea { min-height: 160px; resize: vertical; line-height: 1.7; }
+    .contact-form input:focus,
+    .contact-form select:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: var(--navy, #17233d);
+      box-shadow: 0 0 0 3px rgba(23,35,61,.12);
     }
+    .contact-form .hint { font-size: 13px; color: var(--text-sub, #6b7280); margin-top: 6px; }
+    .contact-form .submit-row { text-align: center; margin-top: 36px; }
+    .contact-form .privacy { font-size: 13px; color: var(--text-sub, #6b7280); text-align: center; margin-top: 18px; line-height: 1.8; }
+    .form-lead { text-align: center; color: var(--text-sub, #6b7280); line-height: 1.9; margin-bottom: 12px; }
+    .form-legend { text-align: center; font-size: 13px; color: var(--text-sub, #6b7280); margin-bottom: 30px; }
+    .form-legend .req { background:#e11d48;color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px; }
   </style>
 </head>
 <body>
@@ -88,21 +109,65 @@
         <p class="section-label">Contact Us</p>
         <h2 class="section-title">お問い合わせ</h2>
       </div>
-      <div style="max-width:760px;margin:0 auto;">
-        <p style="text-align:center;color:var(--text-sub);line-height:1.9;margin-bottom:28px;">
-          下記フォームに必要事項をご入力のうえ、送信してください。<br>
-          工事のご相談・お見積り・採用に関するご質問など、お気軽にお問い合わせください。
-        </p>
-        <!-- お問い合わせフォーム（Tayori 埋め込み・ページ内で送信可・外側カードなし） -->
-        <div class="tayori-form-wrap" style="max-width:680px; margin:0 auto;">
-          <iframe
-            src="https://tayori.com/form/c1701305e9a038310e9f49c89b76732440d2cf3f/"
-            title="お問い合わせフォーム"
-            loading="lazy"
-            scrolling="no"
-          ></iframe>
+
+      <p class="form-lead">
+        下記フォームにご入力のうえ「確認画面へ進む」を押してください。<br>
+        工事のご相談・お見積り・採用に関するご質問など、お気軽にお問い合わせください。
+      </p>
+      <p class="form-legend"><span class="req">必須</span> は入力必須の項目です。</p>
+
+      <!-- 入力フォーム（送信すると確認画面へ / contact_mail.php phase=check） -->
+      <form class="contact-form" action="contact_mail.php" method="post" novalidate>
+        <input type="hidden" name="phase" value="check">
+
+        <div class="field">
+          <label for="f-name">お名前 <span class="req">必須</span></label>
+          <input type="text" id="f-name" name="name" required autocomplete="name" placeholder="長縄 太郎">
         </div>
-      </div>
+
+        <div class="field">
+          <label for="f-kana">ふりがな <span class="req">必須</span></label>
+          <input type="text" id="f-kana" name="kana" required placeholder="ながなわ たろう">
+        </div>
+
+        <div class="field">
+          <label for="f-phone">電話番号 <span class="req">必須</span></label>
+          <input type="tel" id="f-phone" name="phone" required autocomplete="tel" placeholder="0568-81-6099">
+        </div>
+
+        <div class="field">
+          <label for="f-email">メールアドレス <span class="req">必須</span></label>
+          <input type="email" id="f-email" name="email" required autocomplete="email" placeholder="example@example.com">
+        </div>
+
+        <div class="field">
+          <label for="f-occupation">会社名・団体名 <span class="any">任意</span></label>
+          <input type="text" id="f-occupation" name="occupation" autocomplete="organization" placeholder="株式会社〇〇">
+        </div>
+
+        <div class="field">
+          <label for="f-education">お問い合わせ種別 <span class="any">任意</span></label>
+          <select id="f-education" name="education">
+            <option value="">選択してください</option>
+            <option value="工事のご相談・お見積り">工事のご相談・お見積り</option>
+            <option value="採用について">採用について</option>
+            <option value="協力会社・お取引について">協力会社・お取引について</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="f-contents">お問い合わせ内容 <span class="req">必須</span></label>
+          <textarea id="f-contents" name="contents" required placeholder="お問い合わせ内容をご記入ください。"></textarea>
+        </div>
+
+        <div class="submit-row">
+          <button type="submit" class="btn btn-accent btn-lg">確認画面へ進む →</button>
+        </div>
+        <p class="privacy">
+          ご入力いただいた個人情報は、お問い合わせへの対応のみに使用いたします。
+        </p>
+      </form>
     </div>
   </section>
 

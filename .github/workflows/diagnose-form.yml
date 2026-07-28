@@ -1,0 +1,58 @@
+name: Diagnose form-test
+on:
+  workflow_dispatch:
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y lftp
+      - name: HTTP tests against live form
+        run: |
+          BASE="https://naganawa-k.co.jp/form-test"
+          echo "===== 1) GET contact.html ====="
+          curl -sS -o /dev/null -w "HTTP %{http_code} / type=%{content_type}\n" "$BASE/contact.html" || echo "curl失敗"
+          echo ""
+          echo "===== 2) GET contact_mail.php（直アクセス。PHP実行ならindexへ302の想定）====="
+          curl -sS -o /tmp/g.txt -D /tmp/g_h.txt -w "HTTP %{http_code} / type=%{content_type}\n" "$BASE/contact_mail.php" || true
+          echo "--- headers ---"; head -12 /tmp/g_h.txt
+          echo "--- body先頭(生PHPが見えたら実行されていない) ---"; head -8 /tmp/g.txt
+          echo "--- <?php の出現数（>0ならPHP未実行の疑い） ---"; grep -c '<?php' /tmp/g.txt || true
+          echo ""
+          echo "===== 3) POST phase=check（確認画面が返るか）====="
+          curl -sS -X POST "$BASE/contact_mail.php" \
+            --data-urlencode "phase=check" \
+            --data-urlencode "name=テスト太郎" \
+            --data-urlencode "kana=てすとたろう" \
+            --data-urlencode "phone=0568-81-6099" \
+            --data-urlencode "email=formtest@example.com" \
+            --data-urlencode "contents=接続診断テスト" \
+            -o /tmp/check.txt -D /tmp/check_h.txt -w "HTTP %{http_code}\n" || true
+          echo "--- headers ---"; head -12 /tmp/check_h.txt
+          echo "--- title ---"; grep -o '<title>[^<]*</title>' /tmp/check.txt | head -1
+          echo "--- 「入力内容の確認」出現数 ---"; grep -c '入力内容の確認' /tmp/check.txt || true
+          echo "--- 生PHP(<?php)出現数 ---"; grep -c '<?php' /tmp/check.txt || true
+          echo ""
+          echo "===== 4) POST phase=send（実メール送信・診断）====="
+          curl -sS -X POST "$BASE/contact_mail.php" \
+            --data-urlencode "phase=send" \
+            --data-urlencode "name=テスト太郎" \
+            --data-urlencode "kana=てすとたろう" \
+            --data-urlencode "phone=0568-81-6099" \
+            --data-urlencode "email=formtest@example.com" \
+            --data-urlencode "contents=接続診断テスト（送信フェーズ）" \
+            -o /tmp/send.txt -D /tmp/send_h.txt -w "HTTP %{http_code}\n" || true
+          echo "--- headers（Locationがthanksなら送信処理OKパス）---"; head -15 /tmp/send_h.txt
+          echo "--- body先頭 ---"; head -8 /tmp/send.txt
+      - name: Fetch server log
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          OPT="set ftp:ssl-allow false; set ftp:passive-mode true;"
+          echo "===== contact_mail_error.log ====="
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "$OPT cat /htdocs/form-test/contact_mail_error.log; bye" 2>/dev/null || echo "(ログファイル無し＝PHP未実行 or 書込不可の可能性)"
+          echo ""
+          echo "===== form-test 一覧（ログ生成有無の確認）====="
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "$OPT cls -l /htdocs/form-test/; bye" 2>/dev/null

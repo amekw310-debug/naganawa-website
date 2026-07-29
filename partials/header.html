@@ -1,0 +1,58 @@
+<!-- ============================================================
+     共通ヘッダー（正本 / single source of truth）
+     ------------------------------------------------------------
+     ■ これは「共通ヘッダーの正（マスター）」です。
+       現状サイトはビルド無しの静的HTMLのため、各ページの
+       <!-- 共通ヘッダー START --> 〜 <!-- 共通ヘッダー END -->
+       ブロックに“同じ内容”を貼り付けて運用します。
+       ヘッダーを変更するときは、まずこのファイルを直し、
+       その後で全ページの同ブロックへ反映してください。
+
+     ■ パスのルール（重要）
+       ・トップ直下のページ（index.html, about.html, works は works/ 配下…）
+         └ ルート直下のページ（index/about/business/technology/recruit/contact）は
+           このファイルの記述そのまま（プレフィックス無し）。
+       ・サブフォルダ配下のページ（news/ , works/ ）は、
+           href="index.html"        → href="../index.html"
+           href="works/index.html"  → href="../works/index.html"（同フォルダは "index.html"）
+           src="images/logo.png"    → src="../images/logo.png"
+         のように先頭へ ../ を付けてください。
+
+     ■ 現在地の強調
+       ・そのページに対応するリンクへ class="nav-active" を付けます
+         （例：施工実績ページなら 施工実績 のリンクに nav-active）。
+
+     ■ ナビ項目の並び順（全ページ共通で統一）
+       TOP / 新着情報 / 事業内容 / 施工実績 / ICT施工・技術力 / 採用情報 / 会社情報 / お問い合わせ
+     ============================================================ -->
+<header class="header" id="top">
+  <div class="inner header-inner">
+    <a href="index.html" class="logo">
+      <img src="images/logo.png" alt="長縄工務店 ロゴマーク" class="logo-img">
+      <span class="logo-name">株式会社 長縄工務店</span>
+    </a>
+    <nav class="nav">
+      <a href="index.html">TOP</a>
+      <a href="news/index.html">新着情報</a>
+      <a href="business.html">事業内容</a>
+      <a href="works/index.html">施工実績</a>
+      <a href="technology.html">ICT施工・技術力</a>
+      <a href="recruit.html">採用情報</a>
+      <a href="about.html">会社情報</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="メニューを開く">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="index.html">TOP</a>
+    <a href="news/index.html">新着情報</a>
+    <a href="business.html">事業内容</a>
+    <a href="works/index.html">施工実績</a>
+    <a href="technology.html">ICT施工・技術力</a>
+    <a href="recruit.html">採用情報</a>
+    <a href="about.html">会社情報</a>
+    <a href="contact.html">お問い合わせ</a>
+  </div>
+</header>

@@ -20,17 +20,21 @@ jobs:
           (async () => {
             const b = await chromium.launch();
             const base='https://amekw310-debug.github.io/naganawa-website/';
-            // contact PC
-            const pc=await b.newPage({viewport:{width:1280,height:900}});
-            await pc.goto(base+'contact.html?cb='+Date.now(),{waitUntil:'load',timeout:90000}).catch(e=>console.log('err',e.message));
-            await pc.waitForTimeout(6000);
-            await pc.screenshot({path:'contact_pc.jpg',type:'jpeg',quality:72,fullPage:true});
-            await pc.close();
-            // contact SP
+            const shots=[
+              ['works/index.html','works_pc',1280],
+              ['works/detail.html','detail_pc',1280],
+            ];
+            for (const [path,name,w] of shots){
+              const pg=await b.newPage({viewport:{width:w,height:900}});
+              await pg.goto(base+path+'?cb='+Date.now(),{waitUntil:'load',timeout:90000}).catch(e=>console.log('err',name,e.message));
+              await pg.waitForTimeout(3500);
+              await pg.screenshot({path:name+'.jpg',type:'jpeg',quality:72,fullPage:true});
+              await pg.close(); console.log('shot',name);
+            }
             const sp=await b.newPage({viewport:{width:390,height:820},isMobile:true,deviceScaleFactor:2});
-            await sp.goto(base+'contact.html?cb='+Date.now(),{waitUntil:'load',timeout:90000}).catch(()=>{});
-            await sp.waitForTimeout(6000);
-            await sp.screenshot({path:'contact_sp.jpg',type:'jpeg',quality:72,fullPage:true});
+            await sp.goto(base+'works/index.html?cb='+Date.now(),{waitUntil:'load',timeout:90000}).catch(()=>{});
+            await sp.waitForTimeout(3500);
+            await sp.screenshot({path:'works_sp.jpg',type:'jpeg',quality:72,fullPage:true});
             await b.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           JS
@@ -39,9 +43,9 @@ jobs:
       - name: Encode + commit
         run: |
           mkdir -p pv
-          for f in contact_pc contact_sp; do base64 -w0 ${f}.jpg > pv/${f}.b64.txt; done
+          for f in works_pc detail_pc works_sp; do base64 -w0 ${f}.jpg > pv/${f}.b64.txt; done
           git config user.name "github-actions"; git config user.email "actions@github.com"
           git checkout -B preview-shot
           git add -f pv/
-          git commit -m "preview shots (contact)"
+          git commit -m "preview shots (works)"
           git push -f origin preview-shot

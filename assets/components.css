@@ -1,0 +1,114 @@
+/* ============================================================
+   共通コンポーネント（施工実績 / お知らせ）
+   - 既存 style.css のデザイントークン（--navy / --accent / --radius /
+     --text-sub 等）を流用し、配色・雰囲気を統一。
+   - microCMS 連携を見据え、BEM 命名で構成。連携時はこのクラス構成の
+     まま値を差し込めます（HTMLの <!-- microCMS Loop Start/End --> 参照）。
+   ============================================================ */
+
+/* ============ 施工実績：一覧グリッド ============ */
+.works-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:28px;
+}
+@media (max-width:768px){
+  .works-grid{ grid-template-columns:1fr; gap:20px; }
+}
+
+/* ============ 施工実績：カード（一覧・トップ共通） ============ */
+.work-card{
+  display:block;
+  background:#fff;
+  border-radius:var(--radius, 12px);
+  overflow:hidden;
+  box-shadow:0 6px 20px rgba(0,0,0,.07);
+  color:inherit;
+  text-decoration:none;
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.work-card:hover{ transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.13); }
+.work-card__image{ aspect-ratio:4 / 3; overflow:hidden; background:#eef1f5; }
+.work-card__image img{ width:100%; height:100%; object-fit:cover; display:block; }
+.work-card__body{ padding:18px 20px 22px; }
+.work-card__category{
+  display:inline-block;
+  font-size:12px; font-weight:700; line-height:1;
+  color:#fff; background:var(--navy, #17233d);
+  border-radius:4px; padding:4px 10px; margin-bottom:12px;
+}
+/* 工事種別ごとの色分け（カテゴリ：舗装工事 / 土木工事 / その他） */
+.work-card__category--paving{ background:#1f6feb; }
+.work-card__category--civil { background:#0f9d58; }
+.work-card__category--other { background:#6b7280; }
+.work-card__title{
+  font-size:17px; font-weight:700; line-height:1.5;
+  color:var(--navy, #17233d); margin:0 0 10px;
+}
+.work-card__date{ font-size:13px; color:var(--text-sub, #6b7280); }
+
+/* ============ 施工実績：カテゴリ絞り込みタブ（現状は見た目のみ） ============ */
+.works-filter{
+  display:flex; flex-wrap:wrap; gap:10px;
+  justify-content:center; margin-bottom:40px;
+}
+.works-filter__item{
+  font-size:14px; font-weight:700;
+  padding:8px 22px; border-radius:999px;
+  border:1px solid #d5dbe3; background:#fff;
+  color:var(--navy, #17233d); cursor:pointer;
+  transition:.2s;
+}
+.works-filter__item:hover{ border-color:var(--navy, #17233d); }
+.works-filter__item.is-active{
+  background:var(--navy, #17233d); color:#fff; border-color:var(--navy, #17233d);
+}
+
+/* ============ 施工実績：詳細 ============ */
+.work-detail{ max-width:860px; margin:0 auto; }
+.work-detail__category{
+  display:inline-block; font-size:13px; font-weight:700; color:#fff;
+  background:var(--navy, #17233d); border-radius:4px; padding:4px 12px; margin-bottom:14px;
+}
+.work-detail__category--paving{ background:#1f6feb; }
+.work-detail__category--civil { background:#0f9d58; }
+.work-detail__category--other { background:#6b7280; }
+.work-detail__title{
+  font-size:28px; font-weight:700; line-height:1.4;
+  color:var(--navy, #17233d); margin:0 0 24px;
+}
+.work-detail__main-image{
+  border-radius:var(--radius, 12px); overflow:hidden;
+  margin-bottom:28px; background:#eef1f5;
+}
+.work-detail__main-image img{ width:100%; height:auto; display:block; }
+.work-detail__meta{
+  list-style:none; margin:0 0 36px; padding:22px 26px;
+  background:#f5f7fa; border-radius:var(--radius, 12px);
+}
+.work-detail__meta-item{
+  display:flex; gap:16px; padding:12px 0;
+  border-bottom:1px solid #e3e8ee; font-size:15px;
+}
+.work-detail__meta-item:last-child{ border-bottom:0; }
+.work-detail__meta-label{ flex:0 0 120px; font-weight:700; color:var(--navy, #17233d); }
+.work-detail__meta-value{ flex:1; color:#333; }
+.work-detail__section-title{
+  font-size:20px; font-weight:700; color:var(--navy, #17233d);
+  border-left:5px solid var(--accent, #c3d82e); padding-left:14px; margin:36px 0 18px;
+}
+.work-detail__content{ font-size:16px; line-height:1.95; color:#333; }
+.work-detail__gallery{ display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
+@media (max-width:640px){ .work-detail__gallery{ grid-template-columns:repeat(2, 1fr); } }
+.work-detail__gallery-item{ aspect-ratio:4 / 3; border-radius:8px; overflow:hidden; background:#eef1f5; }
+.work-detail__gallery-item img{ width:100%; height:100%; object-fit:cover; display:block; }
+.work-detail__back{ text-align:center; margin-top:44px; }
+
+/* ============ お知らせ：カテゴリタグ 色分け（既存 .news-tag を拡張） ============ */
+/* 既存: .news-tag / .news-tag--info（お知らせ） */
+.news-tag--recruit{ background:#0f9d58; }  /* 採用情報 */
+.news-tag--company{ background:#1f6feb; }  /* 会社情報 */
+.news-tag--other  { background:#6b7280; }  /* その他 */
+
+/* ============ トップ等：セクション下部の「一覧を見る」ボタン ============ */
+.section-more{ text-align:center; margin-top:40px; }

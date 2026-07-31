@@ -92,74 +92,45 @@
       <div class="works-grid">
 
         <!-- microCMS Loop Start -->
-        <!-- ↓ この .work-card 1件分を、microCMS の記事数だけ繰り返します（現在はダミー） -->
-        <a class="work-card" href="detail.html">
-          <div class="work-card__image">
-            <img src="../images/IMG_3746.jpeg" alt="市道1号線 舗装補修工事">
+        <!-- ↓ 施工実績データ未受領のため、暫定で「Coming Soon」ダミーを3件表示。
+             microCMS連携時は、この .work-card 1件分を記事数だけ繰り返します。
+             その際、外側を <a class="work-card" href="（詳細ページ）"> に戻し、
+             .work-card__image--placeholder を実画像 <img> に、カテゴリ／工事名／
+             完成年月を実データに差し替えてください。 -->
+        <div class="work-card work-card--coming" aria-disabled="true">
+          <div class="work-card__image work-card__image--placeholder">
+            <span class="work-card__coming">Coming Soon</span>
           </div>
           <div class="work-card__body">
-            <span class="work-card__category work-card__category--paving">舗装工事</span>
-            <h3 class="work-card__title">市道1号線 舗装補修工事</h3>
-            <p class="work-card__date">2026年6月 完成</p>
+            <span class="work-card__category">施工実績</span>
+            <h3 class="work-card__title">施工実績を準備中です</h3>
+            <p class="work-card__date">掲載準備中</p>
           </div>
-        </a>
+        </div>
         <!-- microCMS Loop End -->
 
-        <!-- ↓ ここから下はレイアウト確認用ダミー。microCMS連携時は上記Loop内が繰り返されます -->
-        <a class="work-card" href="detail.html">
-          <div class="work-card__image">
-            <img src="../images/IMG_3762.jpeg" alt="春日井市 宅地造成工事">
+        <!-- ↓ レイアウト確認用ダミー（同上）。連携時は上記Loop内が繰り返されます -->
+        <div class="work-card work-card--coming" aria-disabled="true">
+          <div class="work-card__image work-card__image--placeholder">
+            <span class="work-card__coming">Coming Soon</span>
           </div>
           <div class="work-card__body">
-            <span class="work-card__category work-card__category--civil">土木工事</span>
-            <h3 class="work-card__title">春日井市 宅地造成工事</h3>
-            <p class="work-card__date">2026年5月 完成</p>
+            <span class="work-card__category">施工実績</span>
+            <h3 class="work-card__title">施工実績を準備中です</h3>
+            <p class="work-card__date">掲載準備中</p>
           </div>
-        </a>
+        </div>
 
-        <a class="work-card" href="detail.html">
-          <div class="work-card__image">
-            <img src="../images/IMG_0911.jpeg" alt="県道12号 アスファルト舗装工事">
+        <div class="work-card work-card--coming" aria-disabled="true">
+          <div class="work-card__image work-card__image--placeholder">
+            <span class="work-card__coming">Coming Soon</span>
           </div>
           <div class="work-card__body">
-            <span class="work-card__category work-card__category--paving">舗装工事</span>
-            <h3 class="work-card__title">県道12号 アスファルト舗装工事</h3>
-            <p class="work-card__date">2026年3月 完成</p>
+            <span class="work-card__category">施工実績</span>
+            <h3 class="work-card__title">施工実績を準備中です</h3>
+            <p class="work-card__date">掲載準備中</p>
           </div>
-        </a>
-
-        <a class="work-card" href="detail.html">
-          <div class="work-card__image">
-            <img src="../images/IMG_1317.jpeg" alt="河川護岸整備工事">
-          </div>
-          <div class="work-card__body">
-            <span class="work-card__category work-card__category--civil">土木工事</span>
-            <h3 class="work-card__title">河川護岸整備工事</h3>
-            <p class="work-card__date">2026年2月 完成</p>
-          </div>
-        </a>
-
-        <a class="work-card" href="detail.html">
-          <div class="work-card__image">
-            <img src="../images/IMG_9658.jpeg" alt="商業施設 駐車場舗装工事">
-          </div>
-          <div class="work-card__body">
-            <span class="work-card__category work-card__category--paving">舗装工事</span>
-            <h3 class="work-card__title">商業施設 駐車場舗装工事</h3>
-            <p class="work-card__date">2025年12月 完成</p>
-          </div>
-        </a>
-
-        <a class="work-card" href="detail.html">
-          <div class="work-card__image">
-            <img src="../images/A8260A1A-C888-41AE-B238-38D36F589C5F.jpeg" alt="排水路整備工事">
-          </div>
-          <div class="work-card__body">
-            <span class="work-card__category work-card__category--other">その他</span>
-            <h3 class="work-card__title">排水路整備工事</h3>
-            <p class="work-card__date">2025年11月 完成</p>
-          </div>
-        </a>
+        </div>
 
       </div><!-- /.works-grid -->
 

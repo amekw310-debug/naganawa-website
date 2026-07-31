@@ -47,6 +47,28 @@
 }
 .work-card__date{ font-size:13px; color:var(--text-sub, #6b7280); }
 
+/* ============ 施工実績：Coming Soon プレースホルダー（データ未受領時） ============ */
+/* クリック不可カード（<div> で実装）。ホバーの浮きも抑制。 */
+.work-card--coming{ cursor:default; }
+.work-card--coming:hover{ transform:none; box-shadow:0 6px 20px rgba(0,0,0,.07); }
+/* 画像部：グレー地＋半透明オーバーレイ＋中央のComing Soon（サイズは実カードと同じ4:3） */
+.work-card__image--placeholder{
+  background:#D9D9D9;
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
+}
+.work-card__image--placeholder::before{
+  content:""; position:absolute; inset:0;
+  background:rgba(0,0,0,.32);
+}
+.work-card__coming{
+  position:relative; z-index:1;
+  color:#fff; font-weight:800;
+  font-size:clamp(22px, 3vw, 30px);
+  letter-spacing:.06em;
+  text-shadow:0 2px 8px rgba(0,0,0,.28);
+}
+
 /* ============ 施工実績：カテゴリ絞り込みタブ（現状は見た目のみ） ============ */
 .works-filter{
   display:flex; flex-wrap:wrap; gap:10px;

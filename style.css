@@ -1641,13 +1641,39 @@ ul {
   font-size: 15px;
 }
 
-/* 募集職種カード：可変枚数を均等幅で中央寄せ（募集職種一覧） */
-.biz-intro-cards--roles {
-  grid-template-columns: repeat(auto-fit, minmax(220px, 260px));
-  justify-content: center;
+/* 募集職種カード：PCは「上段3枚／下段4枚」を12分割グリッドで均等配置
+   （7職種。バックオフィスが1枚余るのを防ぐ）。
+   ※.biz-intro-cards.biz-intro-cards--roles と2クラス指定で、共通の
+     .biz-intro-cards メディアクエリより優先させています。 */
+.biz-intro-cards.biz-intro-cards--roles {
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
 }
-.biz-intro-cards--roles .biz-intro-card {
-  grid-column: auto;
+/* 上段3枚：各4カラム（4×3=12） */
+.biz-intro-cards--roles .biz-intro-card:nth-child(-n + 3) {
+  grid-column: span 4;
+}
+/* 下段4枚：各3カラム（3×4=12）→エリア全幅に均等配置 */
+.biz-intro-cards--roles .biz-intro-card:nth-child(n + 4) {
+  grid-column: span 3;
+}
+/* タブレット：2列（横スクロール防止） */
+@media (max-width: 900px) {
+  .biz-intro-cards.biz-intro-cards--roles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .biz-intro-cards--roles .biz-intro-card:nth-child(n) {
+    grid-column: auto;
+  }
+}
+/* スマートフォン：1列 */
+@media (max-width: 560px) {
+  .biz-intro-cards.biz-intro-cards--roles {
+    grid-template-columns: 1fr;
+  }
+  .biz-intro-cards--roles .biz-intro-card:nth-child(n) {
+    grid-column: auto;
+  }
 }
 
 /* ============================

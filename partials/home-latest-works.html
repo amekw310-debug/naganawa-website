@@ -1,0 +1,65 @@
+<!-- ============================================================
+     [退避スニペット] トップpage「最新の施工実績」セクション
+     ------------------------------------------------------------
+     ■ 状態：施工実績データが未公開のため、index.html から一旦削除し、
+       将来そのまま戻せるよう、このファイルに markup を保管しています。
+     ■ 再表示の手順：
+       下の <section id="latest-works"> … </section> ブロックを、
+       index.html の「最新のお知らせ」(#news) セクションの直後、
+       <!-- 採用情報バナー --> の直前に貼り戻すだけです。
+     ■ パス基準：index.html（ルート）用に images/ , works/ の相対パス。
+     ■ microCMS連携時は Loop Start 〜 End の1件を記事数だけ繰り返します。
+     ============================================================ -->
+  <section class="section section--gray" id="latest-works">
+    <div class="inner">
+      <div class="section-header">
+        <p class="section-label">Works</p>
+        <h2 class="section-title">最新の施工実績</h2>
+      </div>
+
+      <div class="works-grid">
+
+        <!-- microCMS Loop Start -->
+        <!-- ↓ この .work-card 1件分を、施工実績の最新3件ぶん繰り返します（差し替え用ダミー） -->
+        <a class="work-card" href="works/detail.html">
+          <div class="work-card__image">
+            <img src="images/IMG_3746.jpeg" alt="市道1号線 舗装補修工事">
+          </div>
+          <div class="work-card__body">
+            <span class="work-card__category work-card__category--paving">舗装工事</span>
+            <h3 class="work-card__title">市道1号線 舗装補修工事</h3>
+            <p class="work-card__date">2026年6月 完成</p>
+          </div>
+        </a>
+        <!-- microCMS Loop End -->
+
+        <!-- ↓ 以下はレイアウト確認用ダミー。連携時は上記Loop内が繰り返されます -->
+        <a class="work-card" href="works/detail.html">
+          <div class="work-card__image">
+            <img src="images/IMG_3762.jpeg" alt="春日井市 宅地造成工事">
+          </div>
+          <div class="work-card__body">
+            <span class="work-card__category work-card__category--civil">土木工事</span>
+            <h3 class="work-card__title">春日井市 宅地造成工事</h3>
+            <p class="work-card__date">2026年5月 完成</p>
+          </div>
+        </a>
+
+        <a class="work-card" href="works/detail.html">
+          <div class="work-card__image">
+            <img src="images/IMG_0911.jpeg" alt="県道12号 アスファルト舗装工事">
+          </div>
+          <div class="work-card__body">
+            <span class="work-card__category work-card__category--paving">舗装工事</span>
+            <h3 class="work-card__title">県道12号 アスファルト舗装工事</h3>
+            <p class="work-card__date">2026年3月 完成</p>
+          </div>
+        </a>
+
+      </div><!-- /.works-grid -->
+
+      <div class="section-more">
+        <a href="works/index.html" class="btn btn-accent">施工実績一覧へ →</a>
+      </div>
+    </div>
+  </section>

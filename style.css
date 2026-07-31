@@ -1624,13 +1624,21 @@ ul {
   color: var(--accent-dark);
 }
 
-/* 事業内容カード：2件のとき中央寄せ（事業＝2事業） */
+/* 事業内容カード：2件のとき中央寄せ・大きめ（事業＝2事業） */
 .biz-intro-cards--pair {
-  grid-template-columns: repeat(2, minmax(240px, 340px));
+  grid-template-columns: repeat(2, minmax(300px, 480px));
+  gap: 32px;
   justify-content: center;
 }
 .biz-intro-cards--pair .biz-intro-card {
   grid-column: auto;
+  padding: 44px 40px;
+}
+.biz-intro-cards--pair .biz-intro-name {
+  font-size: 24px;
+}
+.biz-intro-cards--pair .biz-intro-desc {
+  font-size: 15px;
 }
 
 /* 募集職種カード：可変枚数を均等幅で中央寄せ（募集職種一覧） */

@@ -1725,6 +1725,17 @@ ul {
   }
 }
 
+/* 募集要項へのジャンプボタン（募集職種カード直後・中央揃え・上下余白） */
+.recruit-jump {
+  text-align: center;
+  margin: 48px 0 4px;
+}
+/* ページ内リンク先：固定ヘッダーに隠れないようオフセット（スムーズスクロールは
+   html の scroll-behavior:smooth により有効） */
+#recruit-requirements {
+  scroll-margin-top: 110px;
+}
+
 /* ============================
    Business Detail Sections
    ============================ */

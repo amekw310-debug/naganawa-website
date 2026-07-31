@@ -1680,38 +1680,48 @@ ul {
   color: #f3d9df;
 }
 
-/* 募集職種カード：PCは「上段3枚／下段4枚」を12分割グリッドで均等配置
-   （7職種。バックオフィスが1枚余るのを防ぐ）。
-   ※.biz-intro-cards.biz-intro-cards--roles と2クラス指定で、共通の
-     .biz-intro-cards メディアクエリより優先させています。 */
-.biz-intro-cards.biz-intro-cards--roles {
-  grid-template-columns: repeat(12, 1fr);
+/* 募集職種カード：上段3枚／下段4枚を「別グリッド」で実装。
+   ・上段(.roles-top)＝3列（従来どおりコンテナ幅内）。
+   ・下段(.roles-bottom)＝4列。カード幅は上段と同じに保ち、行全体は
+     上段より広くなってコンテナ外へブレイクアウト（中央基準）。
+   ・PC限定。タブレット2列／スマホ1列。横スクロールは 100vw 上限で防止。
+   ※共通 .biz-intro-cards のメディアクエリより優先させるため2クラス指定。 */
+.biz-intro-cards.roles-top {
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
-/* 上段3枚：各4カラム（4×3=12） */
-.biz-intro-cards--roles .biz-intro-card:nth-child(-n + 3) {
-  grid-column: span 4;
+.biz-intro-cards.roles-bottom {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+  /* 下段の幅＝上段カード幅×4＋gap×3（= 上段と同一カード幅）。
+     ただし 100vw を超えないよう上限を設け、横スクロールを防ぐ。 */
+  width: min(calc((100% * 4 + 24px) / 3), calc(100vw - 40px));
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
-/* 下段4枚：各3カラム（3×4=12）→エリア全幅に均等配置 */
-.biz-intro-cards--roles .biz-intro-card:nth-child(n + 4) {
-  grid-column: span 3;
+.roles-top .biz-intro-card,
+.roles-bottom .biz-intro-card {
+  grid-column: auto;
 }
-/* タブレット：2列（横スクロール防止） */
+/* タブレット：両段とも2列・ブレイクアウト解除 */
 @media (max-width: 900px) {
-  .biz-intro-cards.biz-intro-cards--roles {
+  .biz-intro-cards.roles-top,
+  .biz-intro-cards.roles-bottom {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .biz-intro-cards--roles .biz-intro-card:nth-child(n) {
-    grid-column: auto;
+    width: auto;
+    margin-left: 0;
+    transform: none;
   }
 }
-/* スマートフォン：1列 */
+/* スマートフォン：両段とも1列 */
 @media (max-width: 560px) {
-  .biz-intro-cards.biz-intro-cards--roles {
+  .biz-intro-cards.roles-top,
+  .biz-intro-cards.roles-bottom {
     grid-template-columns: 1fr;
-  }
-  .biz-intro-cards--roles .biz-intro-card:nth-child(n) {
-    grid-column: auto;
+    width: auto;
+    margin-left: 0;
+    transform: none;
   }
 }
 

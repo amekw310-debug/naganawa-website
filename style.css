@@ -3292,17 +3292,29 @@ ul {
 }
 
 .president-text {
-  font-size: 0.95rem;
-  line-height: 2;
+  font-size: 1rem;
+  line-height: 2.1;
   color: var(--text-sub);
-  margin-bottom: 24px;
+  margin: 0 0 1.6em;
+  max-width: 40em;      /* 1行が長くなりすぎないよう文字数を調整 */
   text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+/* 冒頭の一文はリード文として少し強調 */
+.president-text--lead {
+  font-size: 1.12rem;
+  font-weight: 700;
+  line-height: 1.9;
+  color: var(--navy);
+  margin-bottom: 1.4em;
 }
 
 .president-sig {
-  margin-top: 36px;
+  margin-top: 44px;
+  max-width: 40em;      /* 本文と右端をそろえる */
   text-align: right;
-  line-height: 1.8;
+  line-height: 1.9;
 }
 
 .president-company {

@@ -284,9 +284,10 @@
   </section>
 
   <!-- ============================================================
-       最新のお知らせ（トップ表示：最新3件）
+       最新のお知らせ（トップ表示：最新最大3件）
        ※microCMS連携時は news の最新3件を .news-item で差し込みます。
          繰り返し単位は下記 <!-- microCMS Loop Start/End --> の1件分。
+         公開前のため、現在は実データ1件のみ表示（仮の日付）。
        ============================================================ -->
   <section class="section" id="news">
     <div class="inner">
@@ -298,25 +299,13 @@
       <ul class="news-list">
 
         <!-- microCMS Loop Start -->
-        <!-- ↓ この .news-item 1件分を、お知らせの最新3件ぶん繰り返します（現在はダミー） -->
+        <!-- ↓ この .news-item 1件分を、お知らせの最新3件ぶん繰り返します（現在は静的1件） -->
         <li class="news-item">
           <span class="news-date">2026.07.24</span>
           <span class="news-tag news-tag--info">お知らせ</span>
           <a href="news/20260724-renewal.html" class="news-title">ホームページをリニューアルしました</a>
         </li>
         <!-- microCMS Loop End -->
-
-        <!-- ↓ 以下はレイアウト確認用ダミー。連携時は上記Loop内が繰り返されます -->
-        <li class="news-item">
-          <span class="news-date">2026.06.10</span>
-          <span class="news-tag news-tag--recruit">採用情報</span>
-          <a href="recruit.html" class="news-title">2027年度 新卒採用のエントリー受付を開始しました</a>
-        </li>
-        <li class="news-item">
-          <span class="news-date">2026.05.20</span>
-          <span class="news-tag news-tag--company">会社情報</span>
-          <a href="news/index.html" class="news-title">夏季休業期間のお知らせ</a>
-        </li>
 
       </ul>
 

@@ -1641,6 +1641,45 @@ ul {
   font-size: 15px;
 }
 
+/* 事業内容カードの配色：左＝藍色 / 右＝ワインレッド（濃色で視認性・高級感）
+   ※サイズ・角丸・余白・影・レイアウト・文言・リンク先は変更しない。 */
+/* 左：舗装工事業＝藍色（あいいろ） */
+.biz-intro-cards--pair .biz-intro-card:nth-child(1) {
+  background: linear-gradient(160deg, #294c79 0%, #1b3454 100%);
+  border-top-color: rgba(255, 255, 255, 0.30);
+}
+/* 右：土木工事業＝ワインレッド（ボルドー） */
+.biz-intro-cards--pair .biz-intro-card:nth-child(2) {
+  background: linear-gradient(160deg, #6d2537 0%, #491624 100%);
+  border-top-color: rgba(255, 255, 255, 0.28);
+}
+/* 濃色カード内の文字色（白系で可読性を確保） */
+.biz-intro-cards--pair .biz-intro-card:nth-child(1) .biz-intro-num,
+.biz-intro-cards--pair .biz-intro-card:nth-child(2) .biz-intro-num {
+  color: rgba(255, 255, 255, 0.72);
+}
+.biz-intro-cards--pair .biz-intro-card:nth-child(1) .biz-intro-name,
+.biz-intro-cards--pair .biz-intro-card:nth-child(2) .biz-intro-name {
+  color: #ffffff;
+}
+.biz-intro-cards--pair .biz-intro-card:nth-child(1) .biz-intro-desc,
+.biz-intro-cards--pair .biz-intro-card:nth-child(2) .biz-intro-desc {
+  color: rgba(255, 255, 255, 0.90);
+}
+/* リンク：藍カード＝淡い藍系 / ワインカード＝白 */
+.biz-intro-cards--pair .biz-intro-card:nth-child(1) .biz-intro-link {
+  color: #cde0f7;
+}
+.biz-intro-cards--pair .biz-intro-card:nth-child(1) .biz-intro-link:hover {
+  color: #ffffff;
+}
+.biz-intro-cards--pair .biz-intro-card:nth-child(2) .biz-intro-link {
+  color: #ffffff;
+}
+.biz-intro-cards--pair .biz-intro-card:nth-child(2) .biz-intro-link:hover {
+  color: #f3d9df;
+}
+
 /* 募集職種カード：PCは「上段3枚／下段4枚」を12分割グリッドで均等配置
    （7職種。バックオフィスが1枚余るのを防ぐ）。
    ※.biz-intro-cards.biz-intro-cards--roles と2クラス指定で、共通の

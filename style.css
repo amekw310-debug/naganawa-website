@@ -1624,6 +1624,24 @@ ul {
   color: var(--accent-dark);
 }
 
+/* 事業内容カード：2件のとき中央寄せ（事業＝2事業） */
+.biz-intro-cards--pair {
+  grid-template-columns: repeat(2, minmax(240px, 340px));
+  justify-content: center;
+}
+.biz-intro-cards--pair .biz-intro-card {
+  grid-column: auto;
+}
+
+/* 募集職種カード：可変枚数を均等幅で中央寄せ（募集職種一覧） */
+.biz-intro-cards--roles {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 260px));
+  justify-content: center;
+}
+.biz-intro-cards--roles .biz-intro-card {
+  grid-column: auto;
+}
+
 /* ============================
    Business Detail Sections
    ============================ */

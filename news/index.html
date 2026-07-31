@@ -20,10 +20,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
+  <!-- 施工実績・お知らせ 共通コンポーネント（BEM）。microCMS連携を見据えた枠組み -->
+  <link rel="stylesheet" href="../assets/components.css">
 </head>
 <body>
 
-<!-- ヘッダー -->
+<!-- ============================================================
+     共通ヘッダー START
+     ※全ページ共通。編集時は partials/header.html を「正」とし、
+       全ページの同ブロックへ反映してください（共通化の集約先）。
+       サブフォルダ配下のためリンクは ../ を付けています。
+     ============================================================ -->
 <header class="header" id="top">
   <div class="inner header-inner">
     <a href="../index.html" class="logo">
@@ -34,6 +41,7 @@
       <a href="../index.html">TOP</a>
       <a href="index.html" class="nav-active">新着情報</a>
       <a href="../business.html">事業内容</a>
+      <a href="../works/index.html">施工実績</a>
       <a href="../technology.html">ICT施工・技術力</a>
       <a href="../recruit.html">採用情報</a>
       <a href="../about.html">会社情報</a>
@@ -47,12 +55,14 @@
     <a href="../index.html">TOP</a>
     <a href="index.html">新着情報</a>
     <a href="../business.html">事業内容</a>
+    <a href="../works/index.html">施工実績</a>
     <a href="../technology.html">ICT施工・技術力</a>
     <a href="../recruit.html">採用情報</a>
     <a href="../about.html">会社情報</a>
     <a href="../contact.html">お問い合わせ</a>
   </div>
 </header>
+<!-- 共通ヘッダー END -->
 
 <main>
 
@@ -71,12 +81,53 @@
         <h2 class="section-title">新着情報</h2>
       </div>
 
+      <!-- カテゴリ絞り込み（現状は見た目のみ。後でJS/microCMSで機能付与）
+           お知らせカテゴリー：お知らせ / 採用情報 / 会社情報 / その他
+           ※「施工実績」は施工実績ページとして独立のため、ここには含めません。 -->
+      <div class="works-filter">
+        <button class="works-filter__item is-active" type="button">すべて</button>
+        <button class="works-filter__item" type="button">お知らせ</button>
+        <button class="works-filter__item" type="button">採用情報</button>
+        <button class="works-filter__item" type="button">会社情報</button>
+        <button class="works-filter__item" type="button">その他</button>
+      </div>
+
       <ul class="news-list">
+
+        <!-- microCMS Loop Start -->
+        <!-- ↓ この .news-item 1件分を、お知らせの件数だけ繰り返します（現在はダミー）
+             カテゴリのタグ色は class を差し替え：
+               お知らせ→news-tag--info / 採用情報→news-tag--recruit /
+               会社情報→news-tag--company / その他→news-tag--other -->
         <li class="news-item">
           <span class="news-date">2026.07.24</span>
           <span class="news-tag news-tag--info">お知らせ</span>
           <a href="20260724-renewal.html" class="news-title">ホームページをリニューアルしました</a>
         </li>
+        <!-- microCMS Loop End -->
+
+        <!-- ↓ 以下はレイアウト確認用ダミー。連携時は上記Loop内が繰り返されます -->
+        <li class="news-item">
+          <span class="news-date">2026.06.10</span>
+          <span class="news-tag news-tag--recruit">採用情報</span>
+          <a href="20260724-renewal.html" class="news-title">2027年度 新卒採用のエントリー受付を開始しました</a>
+        </li>
+        <li class="news-item">
+          <span class="news-date">2026.05.20</span>
+          <span class="news-tag news-tag--company">会社情報</span>
+          <a href="20260724-renewal.html" class="news-title">夏季休業期間のお知らせ</a>
+        </li>
+        <li class="news-item">
+          <span class="news-date">2026.04.05</span>
+          <span class="news-tag news-tag--info">お知らせ</span>
+          <a href="20260724-renewal.html" class="news-title">春の安全パトロールを実施しました</a>
+        </li>
+        <li class="news-item">
+          <span class="news-date">2026.03.18</span>
+          <span class="news-tag news-tag--other">その他</span>
+          <a href="20260724-renewal.html" class="news-title">地域清掃ボランティアに参加しました</a>
+        </li>
+
       </ul>
 
     </div>
@@ -84,7 +135,10 @@
 
 </main>
 
-<!-- フッター -->
+<!-- ============================================================
+     共通フッター START
+     ※全ページ共通。編集時は partials/footer.html を「正」として反映。
+     ============================================================ -->
 <footer class="footer">
   <div class="inner footer-inner">
     <div class="footer-sns">
@@ -102,6 +156,7 @@
       <a href="../index.html">TOP</a>
       <a href="index.html">新着情報</a>
       <a href="../business.html">事業内容</a>
+      <a href="../works/index.html">施工実績</a>
       <a href="../technology.html">ICT施工・技術力</a>
       <a href="../recruit.html">採用情報</a>
       <a href="../about.html">会社情報</a>
@@ -110,6 +165,7 @@
     <p class="footer-copy">© 2026 長縄工務店. All rights reserved.</p>
   </div>
 </footer>
+<!-- 共通フッター END -->
 
 <script>
   const hamburger = document.getElementById('hamburger');

@@ -47,6 +47,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho+B1:wght@400;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=7">
+  <!-- 施工実績・お知らせ 共通コンポーネント（BEM）。microCMS連携を見据えた枠組み -->
+  <link rel="stylesheet" href="assets/components.css">
 </head>
 <body>
 
@@ -59,7 +61,12 @@
   </div>
 </div>
 
-<!-- ヘッダー -->
+<!-- ============================================================
+     共通ヘッダー START
+     ※全ページ共通。編集時は partials/header.html を「正」とし、
+       全ページの同ブロックへ反映してください（共通化の集約先）。
+       トップ直下のためリンクに ../ は付けません。
+     ============================================================ -->
 <header class="header" id="top">
   <div class="inner header-inner">
     <a href="index.html" class="logo">
@@ -70,6 +77,7 @@
       <a href="index.html" class="nav-active">TOP</a>
       <a href="news/index.html">新着情報</a>
       <a href="business.html">事業内容</a>
+      <a href="works/index.html">施工実績</a>
       <a href="technology.html">ICT施工・技術力</a>
       <a href="recruit.html">採用情報</a>
       <a href="about.html">会社情報</a>
@@ -83,12 +91,14 @@
     <a href="#top">TOP</a>
     <a href="news/index.html">新着情報</a>
     <a href="business.html">事業内容</a>
+    <a href="works/index.html">施工実績</a>
     <a href="technology.html">ICT施工・技術力</a>
     <a href="recruit.html">採用情報</a>
     <a href="about.html">会社情報</a>
     <a href="contact.html">お問い合わせ</a>
   </div>
 </header>
+<!-- 共通ヘッダー END -->
 
 <main>
 
@@ -273,22 +283,105 @@
     </div>
   </section>
 
-  <!-- 新着情報 -->
+  <!-- ============================================================
+       最新のお知らせ（トップ表示：最新3件）
+       ※microCMS連携時は news の最新3件を .news-item で差し込みます。
+         繰り返し単位は下記 <!-- microCMS Loop Start/End --> の1件分。
+       ============================================================ -->
   <section class="section" id="news">
     <div class="inner">
-      <div class="news-banner-inner">
-        <div>
-          <p class="recruit-banner-label">News</p>
-          <h2 class="recruit-banner-title">新着情報</h2>
-          <ul class="news-list" style="margin:0;">
-            <li class="news-item">
-              <span class="news-date">2026.07.24</span>
-              <span class="news-tag news-tag--info">お知らせ</span>
-              <a href="news/20260724-renewal.html" class="news-title">ホームページをリニューアルしました</a>
-            </li>
-          </ul>
-        </div>
-        <a href="news/index.html" class="btn btn-accent btn-lg" style="white-space:nowrap; flex-shrink:0; box-sizing:border-box; text-align:center;">新着情報を詳しく見る →</a>
+      <div class="section-header">
+        <p class="section-label">News</p>
+        <h2 class="section-title">最新のお知らせ</h2>
+      </div>
+
+      <ul class="news-list">
+
+        <!-- microCMS Loop Start -->
+        <!-- ↓ この .news-item 1件分を、お知らせの最新3件ぶん繰り返します（現在はダミー） -->
+        <li class="news-item">
+          <span class="news-date">2026.07.24</span>
+          <span class="news-tag news-tag--info">お知らせ</span>
+          <a href="news/20260724-renewal.html" class="news-title">ホームページをリニューアルしました</a>
+        </li>
+        <!-- microCMS Loop End -->
+
+        <!-- ↓ 以下はレイアウト確認用ダミー。連携時は上記Loop内が繰り返されます -->
+        <li class="news-item">
+          <span class="news-date">2026.06.10</span>
+          <span class="news-tag news-tag--recruit">採用情報</span>
+          <a href="recruit.html" class="news-title">2027年度 新卒採用のエントリー受付を開始しました</a>
+        </li>
+        <li class="news-item">
+          <span class="news-date">2026.05.20</span>
+          <span class="news-tag news-tag--company">会社情報</span>
+          <a href="news/index.html" class="news-title">夏季休業期間のお知らせ</a>
+        </li>
+
+      </ul>
+
+      <div class="section-more">
+        <a href="news/index.html" class="btn btn-accent">お知らせ一覧へ →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       最新の施工実績（トップ表示：最新3件・カード3枚横並び / スマホ縦並び）
+       ※microCMS連携時は works の最新3件を .work-card で差し込みます。
+         繰り返し単位は下記 <!-- microCMS Loop Start/End --> の1件分。
+         カード一覧の表示項目：メイン画像 / 工事名 / 工事種別 / 完成年月
+       ============================================================ -->
+  <section class="section section--gray" id="latest-works">
+    <div class="inner">
+      <div class="section-header">
+        <p class="section-label">Works</p>
+        <h2 class="section-title">最新の施工実績</h2>
+      </div>
+
+      <div class="works-grid">
+
+        <!-- microCMS Loop Start -->
+        <!-- ↓ この .work-card 1件分を、施工実績の最新3件ぶん繰り返します（現在はダミー） -->
+        <a class="work-card" href="works/detail.html">
+          <div class="work-card__image">
+            <img src="images/IMG_3746.jpeg" alt="市道1号線 舗装補修工事">
+          </div>
+          <div class="work-card__body">
+            <span class="work-card__category work-card__category--paving">舗装工事</span>
+            <h3 class="work-card__title">市道1号線 舗装補修工事</h3>
+            <p class="work-card__date">2026年6月 完成</p>
+          </div>
+        </a>
+        <!-- microCMS Loop End -->
+
+        <!-- ↓ 以下はレイアウト確認用ダミー。連携時は上記Loop内が繰り返されます -->
+        <a class="work-card" href="works/detail.html">
+          <div class="work-card__image">
+            <img src="images/IMG_3762.jpeg" alt="春日井市 宅地造成工事">
+          </div>
+          <div class="work-card__body">
+            <span class="work-card__category work-card__category--civil">土木工事</span>
+            <h3 class="work-card__title">春日井市 宅地造成工事</h3>
+            <p class="work-card__date">2026年5月 完成</p>
+          </div>
+        </a>
+
+        <a class="work-card" href="works/detail.html">
+          <div class="work-card__image">
+            <img src="images/IMG_0911.jpeg" alt="県道12号 アスファルト舗装工事">
+          </div>
+          <div class="work-card__body">
+            <span class="work-card__category work-card__category--paving">舗装工事</span>
+            <h3 class="work-card__title">県道12号 アスファルト舗装工事</h3>
+            <p class="work-card__date">2026年3月 完成</p>
+          </div>
+        </a>
+
+      </div><!-- /.works-grid -->
+
+      <div class="section-more">
+        <a href="works/index.html" class="btn btn-accent">施工実績一覧へ →</a>
       </div>
     </div>
   </section>
@@ -353,6 +446,10 @@
 
 </main>
 
+<!-- ============================================================
+     共通フッター START
+     ※全ページ共通。編集時は partials/footer.html を「正」として反映。
+     ============================================================ -->
 <footer class="footer">
   <div class="inner footer-inner">
     <div class="footer-sns">
@@ -373,6 +470,7 @@
     <nav class="footer-nav">
       <a href="news/index.html">新着情報</a>
       <a href="business.html">事業内容</a>
+      <a href="works/index.html">施工実績</a>
       <a href="technology.html">ICT施工・技術力</a>
       <a href="recruit.html">採用情報</a>
       <a href="about.html">会社情報</a>
@@ -381,6 +479,7 @@
     <p class="footer-copy">© 2026 長縄工務店. All rights reserved.</p>
   </div>
 </footer>
+<!-- 共通フッター END -->
 
 <script>
   // ローディング画面

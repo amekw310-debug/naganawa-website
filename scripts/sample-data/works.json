@@ -1,0 +1,36 @@
+{
+  "contents": [
+    {
+      "id": "shido-1-paving",
+      "workDate": "2026-06-01T00:00:00.000Z",
+      "publishedAt": "2026-06-20T00:00:00.000Z",
+      "title": "市道1号線 舗装補修工事",
+      "category": "舗装工事",
+      "place": "愛知県春日井市",
+      "description": "経年劣化した市道1号線の切削オーバーレイによる舗装補修工事。",
+      "mainImage": { "url": "../images/IMG_3746.jpeg", "width": 1600, "height": 1200 },
+      "content": "<p>経年劣化により損傷が進んでいた市道1号線の路面について、既設アスファルトの切削オーバーレイによる舗装補修を行いました。フィニッシャーによる高精度な敷きならしと、タンデムローラーによる入念な締固めにより、平坦性の高い走行快適な路面へと生まれ変わりました。</p><p>交通量の多い路線のため、片側交互通行による安全管理を徹底し、周辺住民の皆さまへの影響を最小限に抑えながら工期内に完了いたしました。</p>",
+      "gallery": [
+        { "image": { "url": "../images/IMG_3762.jpeg" } },
+        { "image": { "url": "../images/IMG_0911.jpeg" } },
+        { "image": { "url": "../images/IMG_1317.jpeg" } }
+      ]
+    },
+    {
+      "id": "river-embankment",
+      "workDate": "2026-05-01T00:00:00.000Z",
+      "publishedAt": "2026-05-15T00:00:00.000Z",
+      "title": "〇〇川 護岸補強工事",
+      "category": "土木工事",
+      "place": "愛知県小牧市",
+      "mainImage": { "url": "../images/IMG_0911.jpeg", "width": 1600, "height": 1200 },
+      "content": "<p>豪雨対策として、〇〇川の護岸をコンクリートブロックで補強しました。安全性と耐久性を高め、地域の防災力向上に貢献しています。</p>",
+      "gallery": [
+        { "image": { "url": "../images/IMG_1317.jpeg" } }
+      ]
+    }
+  ],
+  "totalCount": 2,
+  "offset": 0,
+  "limit": 100
+}

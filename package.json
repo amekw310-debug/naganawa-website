@@ -1,0 +1,14 @@
+{
+  "name": "naganawa-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "長縄工務店 新HP（microCMS → 静的HTML 生成）",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:sample": "MICROCMS_SAMPLE=1 node scripts/build.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

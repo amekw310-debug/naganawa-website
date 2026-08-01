@@ -3,11 +3,20 @@ name: Preview (GitHub Pages)
 # 新HPの「プレビュー専用」。github.io の別URLに配信します。
 # 本番（naganawa-k.co.jp / CANONET FTP）とは完全に別で、影響しません。
 # main に push すると自動でプレビューが更新されます。
+#
+# 配信前に microCMS から news / works を取得し、静的HTML
+# （news/*.html, works/*.html）を生成してから公開します。
+#   - Secrets 未設定時 … 生成をスキップし、リポジトリ内の静的HTMLをそのまま公開
+#   - 取得失敗時       … ジョブを失敗させ、デプロイしない（公開中サイトは無傷）
+# microCMS の Webhook から repository_dispatch(type: microcms-publish) を
+# 送ると、記事の公開/更新時にもこのワークフローで再生成できます。
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+  repository_dispatch:
+    types: [microcms-publish]
 
 permissions:
   contents: read
@@ -29,11 +38,25 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Prepare preview (exclude workflow files)
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build pages from microCMS
+        # APIキーは Secrets から注入（ログには出しません）。
+        env:
+          MICROCMS_SERVICE_ID: ${{ secrets.MICROCMS_SERVICE_ID }}
+          MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
+        run: node scripts/build.mjs
+      - name: Prepare preview (exclude tooling files)
         run: |
           mkdir -p _site
-          # リポジトリ直下をコピー（.git や .github は除外）
-          rsync -a --exclude='.git' --exclude='.github' --exclude='_site' ./ _site/
+          # リポジトリ直下をコピー（.git / .github / ビルド用ファイルは除外）
+          rsync -a \
+            --exclude='.git' --exclude='.github' --exclude='_site' \
+            --exclude='scripts' --exclude='templates' \
+            --exclude='package.json' --exclude='package-lock.json' \
+            --exclude='node_modules' \
+            ./ _site/
           # 検索避け（プレビューがインデックスされないように）
           printf 'User-agent: *\nDisallow: /\n' > _site/robots.txt
       - uses: actions/upload-pages-artifact@v3

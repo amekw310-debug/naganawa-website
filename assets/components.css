@@ -134,3 +134,9 @@
 
 /* ============ トップ等：セクション下部の「一覧を見る」ボタン ============ */
 .section-more{ text-align:center; margin-top:40px; }
+
+/* ============ 一覧の空状態（お知らせ0件時など） ============ */
+.news-empty{
+  list-style:none; text-align:center; color:#6b7280;
+  padding:48px 16px; font-size:16px;
+}

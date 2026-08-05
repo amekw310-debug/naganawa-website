@@ -15,22 +15,16 @@
   <link rel="icon" href="../images/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="../images/logo.png">
   <title>新着情報｜長縄工務店</title>
-  <meta name="description" content="長縄工務店の新着情報・お知らせ一覧。工事実績・採用情報・会社からのお知らせをご覧いただけます。">
+  <meta name="description" content="株式会社長縄工務店の新着情報の詳細ページです。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
-  <!-- 施工実績・お知らせ 共通コンポーネント（BEM）。microCMS連携を見据えた枠組み -->
   <link rel="stylesheet" href="../assets/components.css">
 </head>
 <body>
 
-<!-- ============================================================
-     共通ヘッダー START
-     ※全ページ共通。編集時は partials/header.html を「正」とし、
-       全ページの同ブロックへ反映してください（共通化の集約先）。
-       サブフォルダ配下のためリンクは ../ を付けています。
-     ============================================================ -->
+<!-- ヘッダー -->
 <header class="header" id="top">
   <div class="inner header-inner">
     <a href="../index.html" class="logo">
@@ -62,7 +56,6 @@
     <a href="../contact.html">お問い合わせ</a>
   </div>
 </header>
-<!-- 共通ヘッダー END -->
 
 <main>
 
@@ -73,41 +66,27 @@
       <nav class="breadcrumb" aria-label="パンくずリスト">
         <a href="../index.html">TOP</a>
         <span class="breadcrumb-sep">›</span>
-        <span>新着情報</span>
+        <a href="index.html">新着情報</a>
+        <span class="breadcrumb-sep">›</span>
+        <span id="crumb-title">記事</span>
       </nav>
 
-      <div class="section-header">
-        <p class="section-label">News</p>
-        <h2 class="section-title">新着情報</h2>
+      <!-- microCMS の news から ?id= の1件を js/microcms.js が描画します -->
+      <div id="news-detail">
+        <p class="news-loading">読み込み中...</p>
       </div>
 
-      <!-- カテゴリ絞り込み（js/microcms.js が機能付与）
-           お知らせカテゴリー：お知らせ / 採用情報 / 会社情報 / その他
-           ※「施工実績」は施工実績ページとして独立のため、ここには含めません。 -->
-      <div class="works-filter">
-        <button class="works-filter__item is-active" type="button">すべて</button>
-        <button class="works-filter__item" type="button">お知らせ</button>
-        <button class="works-filter__item" type="button">採用情報</button>
-        <button class="works-filter__item" type="button">会社情報</button>
-        <button class="works-filter__item" type="button">その他</button>
+      <!-- 一覧へ戻る -->
+      <div class="news-pager">
+        <a href="index.html" class="news-pager-back">← 新着情報一覧へ戻る</a>
       </div>
-
-      <!-- microCMS の news を js/microcms.js が描画します。
-           取得中は「読み込み中...」、取得できないときのみ
-           「現在、お知らせはありません。」を表示します。 -->
-      <ul class="news-list" id="news-list">
-        <li class="news-loading">読み込み中...</li>
-      </ul>
 
     </div>
   </section>
 
 </main>
 
-<!-- ============================================================
-     共通フッター START
-     ※全ページ共通。編集時は partials/footer.html を「正」として反映。
-     ============================================================ -->
+<!-- フッター -->
 <footer class="footer">
   <div class="inner footer-inner">
     <div class="footer-sns">
@@ -134,7 +113,6 @@
     <p class="footer-copy">© 2026 長縄工務店. All rights reserved.</p>
   </div>
 </footer>
-<!-- 共通フッター END -->
 
 <script>
   const hamburger = document.getElementById('hamburger');
@@ -155,14 +133,10 @@
   });
 </script>
 
-<!-- microCMS: 新着情報一覧＋カテゴリー絞り込みを描画 -->
+<!-- microCMS: ?id= の記事1件を描画 -->
 <script src="../js/microcms.js"></script>
 <script>
-  NaganawaNews.initList({
-    listId: 'news-list',
-    hrefPrefix: '',
-    filterSelector: '.works-filter__item'
-  });
+  NaganawaNews.initDetail({ rootId: 'news-detail', crumbId: 'crumb-title' });
 </script>
 
 </body>

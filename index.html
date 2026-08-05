@@ -285,9 +285,9 @@
 
   <!-- ============================================================
        最新のお知らせ（トップ表示：最新最大3件）
-       ※microCMS連携時は news の最新3件を .news-item で差し込みます。
-         繰り返し単位は下記の microCMS Loop Start 〜 End コメント間（1件分）。
-         公開前のため、現在は実データ1件のみ表示（仮の日付）。
+       microCMS の news から最新3件を js/microcms.js が描画します。
+       （設定は js/microcms.js に集約。取得中は「読み込み中...」、
+         取得できないときのみ「現在、お知らせはありません。」を表示）
        ============================================================ -->
   <section class="section" id="news">
     <div class="inner">
@@ -296,17 +296,8 @@
         <h2 class="section-title">最新のお知らせ</h2>
       </div>
 
-      <ul class="news-list">
-
-        <!-- microCMS Loop Start -->
-        <!-- ↓ この .news-item 1件分を、お知らせの最新3件ぶん繰り返します（現在は静的1件） -->
-        <li class="news-item">
-          <span class="news-date">2026.07.24</span>
-          <span class="news-tag news-tag--info">お知らせ</span>
-          <a href="news/20260724-renewal.html" class="news-title">ホームページをリニューアルしました</a>
-        </li>
-        <!-- microCMS Loop End -->
-
+      <ul class="news-list" id="news-latest">
+        <li class="news-loading">読み込み中...</li>
       </ul>
 
       <div class="section-more">
@@ -520,6 +511,12 @@
     <span>0568-81-6099</span>
   </a>
 </div>
+
+<!-- microCMS: 最新のお知らせ（最新3件）を描画 -->
+<script src="js/microcms.js"></script>
+<script>
+  NaganawaNews.initTop({ listId: 'news-latest', hrefPrefix: 'news/', limit: 3 });
+</script>
 
 </body>
 </html>

@@ -85,6 +85,16 @@ jobs:
           MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
         run: node scripts/inject-microcms-key.mjs
 
+      - name: Verify _site has NO placeholder (local, pre-upload)
+        # アップロード前に、公開対象ファイルへ確実に注入されたか grep で検証。
+        # 残っていればデプロイを失敗させる（アップロードしない）。
+        run: |
+          if grep -q "__MICROCMS_API_KEY__" _site/js/microcms.js; then
+            echo "::error::_site/js/microcms.js にプレースホルダーが残存。アップロードを中止します。"
+            exit 1
+          fi
+          echo "_site/js/microcms.js: プレースホルダー無し（注入OK）。"
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: '_site'

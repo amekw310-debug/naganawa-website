@@ -16,7 +16,7 @@
    *                   なります。書き込み/管理権限は絶対に付けないこと。
    *  NEWS_ENDPOINT  … microCMS の「API」ID（エンドポイント名）。
    * ------------------------------------------------------------ */
-  var SERVICE_DOMAIN = 'naganawa'; // ← ★要確認：あなたのサービスドメイン
+  var SERVICE_DOMAIN = 'naganawa-k'; // ← あなたのサービスドメイン
   var API_KEY        = 'JS0OzGKw1HtCPEZm1h2d31qYF1dTvpJpQe4x'; // ← GET専用キー推奨
   var NEWS_ENDPOINT  = 'news';
 

@@ -4,12 +4,15 @@ name: Preview (GitHub Pages)
 # 本番（naganawa-k.co.jp / CANONET FTP）とは完全に別で、影響しません。
 # main に push すると自動でプレビューが更新されます。
 #
-# 配信前に microCMS から news / works を取得し、静的HTML
-# （news/*.html, works/*.html）を生成してから公開します。
-#   - Secrets 未設定時 … 生成をスキップし、リポジトリ内の静的HTMLをそのまま公開
-#   - 取得失敗時       … ジョブを失敗させ、デプロイしない（公開中サイトは無傷）
-# microCMS の Webhook から repository_dispatch(type: microcms-publish) を
-# 送ると、記事の公開/更新時にもこのワークフローで再生成できます。
+# 【microCMS 連携方式：クライアント取得 + キーのビルド時注入】
+#   - お知らせはブラウザ側（js/microcms.js）で microCMS から取得して表示します。
+#   - APIキーの実値はリポジトリにコミットしません。リポジトリの
+#     js/microcms.js にはプレースホルダー __MICROCMS_API_KEY__ を置き、
+#     このワークフローが Secrets(MICROCMS_API_KEY) の値を、公開用にコピーした
+#     _site/js/microcms.js にのみ差し込みます（scripts/inject-microcms-key.mjs）。
+#   - 公開前に microCMS へ実際に GET して 200 を確認し、401 等なら
+#     デプロイを中止します（公開中サイトは無傷）。
+#   - サービスドメイン(naganawa-k)は公開情報のため js/microcms.js に直書きです。
 
 on:
   push:
@@ -41,12 +44,27 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Build pages from microCMS
-        # APIキーは Secrets から注入（ログには出しません）。
+
+      - name: Verify microCMS API key (fail fast on 401)
+        # Secrets のキーで実際に GET し、200 以外ならデプロイを止める。
+        # キー値はログに出さず、HTTPステータスのみ表示する。
         env:
-          MICROCMS_SERVICE_ID: ${{ secrets.MICROCMS_SERVICE_ID }}
           MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
-        run: node scripts/build.mjs
+        run: |
+          if [ -z "$MICROCMS_API_KEY" ]; then
+            echo "::error::Secret MICROCMS_API_KEY が未設定です。Settings→Secrets を確認してください。"
+            exit 1
+          fi
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "X-MICROCMS-API-KEY: $MICROCMS_API_KEY" \
+            "https://naganawa-k.microcms.io/api/v1/news?limit=1")
+          echo "microCMS /news HTTP status: $code"
+          if [ "$code" != "200" ]; then
+            echo "::error::microCMS 認証チェック失敗 (HTTP $code)。キー無効/GET権限不足/Secret名相違の可能性。"
+            exit 1
+          fi
+          echo "microCMS auth OK (200)."
+
       - name: Prepare preview (exclude tooling files)
         run: |
           mkdir -p _site
@@ -59,6 +77,14 @@ jobs:
             ./ _site/
           # 検索避け（プレビューがインデックスされないように）
           printf 'User-agent: *\nDisallow: /\n' > _site/robots.txt
+
+      - name: Inject microCMS API key into published JS
+        # 公開用 _site/js/microcms.js のプレースホルダーにのみキーを注入。
+        # リポジトリ本体の js/microcms.js はプレースホルダーのまま。
+        env:
+          MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
+        run: node scripts/inject-microcms-key.mjs
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: '_site'

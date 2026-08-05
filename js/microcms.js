@@ -12,12 +12,17 @@
    *  SERVICE_DOMAIN … 管理画面URL https://<これ>.microcms.io の <これ>
    *                   ※値が違うと取得できません。まずここを確認。
    *  API_KEY        … GET（参照）専用のAPIキー。
-   *                   クライアント配信のためブラウザから閲覧可能に
-   *                   なります。書き込み/管理権限は絶対に付けないこと。
+   *                   ★実値はリポジトリにコミットしません。
+   *                   下のプレースホルダー __MICROCMS_API_KEY__ は、
+   *                   GitHub Actions がデプロイ時に Secrets の
+   *                   MICROCMS_API_KEY から差し込みます
+   *                   （.github/workflows/preview-pages.yml 参照）。
+   *                   ※クライアント配信のため、公開後のJSからは閲覧可能に
+   *                     なります。必ず GET 専用キーにしてください。
    *  NEWS_ENDPOINT  … microCMS の「API」ID（エンドポイント名）。
    * ------------------------------------------------------------ */
-  var SERVICE_DOMAIN = 'naganawa-k'; // ← あなたのサービスドメイン
-  var API_KEY        = 'JS0OzGKw1HtCPEZm1h2d31qYF1dTvpJpQe4x'; // ← GET専用キー推奨
+  var SERVICE_DOMAIN = 'naganawa-k'; // ← あなたのサービスドメイン（公開情報）
+  var API_KEY        = '__MICROCMS_API_KEY__'; // ← デプロイ時にSecretsから注入（実値はコミットしない）
   var NEWS_ENDPOINT  = 'news';
 
   var API_BASE = 'https://' + SERVICE_DOMAIN + '.microcms.io/api/v1/';

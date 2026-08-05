@@ -182,6 +182,18 @@
           '</div>' +
           '<div class="news-article-body">' + body + '</div>' +
         '</article>';
+      // 本文中の table をスクロール用ラッパーで囲む（スマホ対応・全記事共通）
+      var bodyEl = el.querySelector('.news-article-body');
+      if (bodyEl) {
+        Array.prototype.forEach.call(bodyEl.querySelectorAll('table'), function (tbl) {
+          var parent = tbl.parentNode;
+          if (parent && parent.classList && parent.classList.contains('news-table-wrap')) return;
+          var wrap = global.document.createElement('div');
+          wrap.className = 'news-table-wrap';
+          parent.insertBefore(wrap, tbl);
+          wrap.appendChild(tbl);
+        });
+      }
       if (crumb) crumb.textContent = title;
       global.document.title = title + '｜新着情報｜長縄工務店';
     }).catch(function (err) {

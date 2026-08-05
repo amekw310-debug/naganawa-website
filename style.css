@@ -2306,6 +2306,71 @@ ul {
   line-height: 1.7;
 }
 
+/* ---- microCMS リッチエディタ本文の共通テンプレート（追加分） ----
+   ※ 記事ごとの個別CSS・style属性は不要。ここ1か所で全記事に適用。 */
+.news-article-body h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy-dark);
+  margin: 28px 0 12px;
+  line-height: 1.5;
+}
+
+.news-article-body ol {
+  padding-left: 1.4em;
+  margin-bottom: 20px;
+}
+
+.news-article-body strong {
+  font-weight: 700;
+  color: var(--navy-dark);
+}
+
+.news-article-body a {
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
+}
+
+.news-article-body a:hover {
+  color: var(--accent);
+}
+
+/* 表：スマホでは横スクロール（.news-table-wrap は detail.html が自動付与） */
+.news-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 24px 0;
+}
+
+.news-article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 0.92rem;
+}
+
+.news-table-wrap table {
+  margin: 0;
+}
+
+.news-article-body th,
+.news-article-body td {
+  border: 1px solid var(--gray-mid);
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.7;
+}
+
+.news-article-body th {
+  background: var(--gray-light);
+  font-weight: 700;
+  color: var(--navy-dark);
+  white-space: nowrap;
+}
+
 .news-article-cta {
   background: var(--gray-light);
   border-radius: 10px;

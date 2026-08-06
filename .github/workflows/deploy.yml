@@ -5,9 +5,17 @@ name: Deploy to CANONET (FTP)
 #   FTP_SERVER   … 例: ftp.naganawa-k.co.jp
 #   FTP_USERNAME … FTPアカウント
 #   FTP_PASSWORD … FTPパスワード
+#   MICROCMS_API_KEY … microCMS の GET用APIキー（本番 js/microcms.js 生成に使用）
 # 手動実行（Actions タブ → Run workflow）も可能です。
+#
+# 【microCMS 連携（本番 js/microcms.js の生成方式）】
+#   - リポジトリの js/microcms.js は APIキーをプレースホルダー(__MICROCMS_API_KEY__)
+#     のままにし、実キーはコミットしない。
+#   - デプロイ時に Secrets(MICROCMS_API_KEY) を js/microcms.js に注入して“本番用”を
+#     生成し、その実キー入りファイルを htdocs/js/microcms.js へアップロードする。
+#   - これにより 404（ファイル欠落）や 401（プレースホルダー）を防ぐ。
 
-# 【一時停止中】月曜のリニューアル確認まで、push による自動デプロイを止めています。
+# 【一時停止中】push による自動デプロイは止めています（手動実行のみ）。
 # 再開するときは下の push: ブロックのコメントを外してください。
 on:
   # push:
@@ -21,6 +29,46 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Verify microCMS API key (fail fast on 401)
+        # Secrets のキーで実際に GET し、200 以外ならデプロイを止める（キー値は非表示）。
+        env:
+          MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
+        run: |
+          if [ -z "$MICROCMS_API_KEY" ]; then
+            echo "::error::Secret MICROCMS_API_KEY が未設定です。Settings→Secrets を確認してください。"
+            exit 1
+          fi
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "X-MICROCMS-API-KEY: $MICROCMS_API_KEY" \
+            "https://naganawa-k.microcms.io/api/v1/news?limit=1")
+          echo "microCMS /news HTTP status: $code"
+          if [ "$code" != "200" ]; then
+            echo "::error::microCMS 認証チェック失敗 (HTTP $code)。キー無効/GET権限不足/Secret名相違の可能性。"
+            exit 1
+          fi
+          echo "microCMS auth OK (200)."
+
+      - name: Generate production js/microcms.js from Secret (no key in repo)
+        # リポジトリのプレースホルダーに Secrets のキーを注入して本番用を生成。
+        # 生成物はランナー上のみ（コミットしない）。キー値はログに出さない。
+        env:
+          MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
+          INJECT_TARGET: js/microcms.js
+        run: node scripts/inject-microcms-key.mjs
+
+      - name: Guard - no placeholder remains before upload
+        run: |
+          if grep -q "__MICROCMS_API_KEY__" js/microcms.js; then
+            echo "::error::js/microcms.js にプレースホルダーが残存。FTPアップロードを中止します。"
+            exit 1
+          fi
+          echo "js/microcms.js 生成OK（実キー注入済み・プレースホルダー無し）。"
+
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -31,8 +79,8 @@ jobs:
           # サーバー上のフォルダに合わせてください（例: ./ , ./public_html/ , ./www/ , ./htdocs/ ）。
           server-dir: ./htdocs/
           # 開発用ファイルはサーバー(htdocs)に送りません（本番に不要）。
-          # ※既にサーバー上に残っている旧・開発ファイルは自動削除されません。
-          #   下記に該当する既存ファイルは手動またはFTPで削除してください。
+          # ※ js/microcms.js は除外しない（上で実キーを注入済み＝本番用を配置する）。
+          # ※ 既にサーバー上に残る旧・開発ファイルは自動削除されません（手動削除）。
           exclude: |
             **/.git*
             **/.git*/**
@@ -47,6 +95,22 @@ jobs:
             package-lock.json
             **/*.md
             **/contact_mail_error.log
-            # ↓ Canonet本番の js/microcms.js は実APIキー入りのため、
-            #   プレースホルダーのリポジトリ版で上書きしない（新着情報の取得が壊れる）。
-            js/microcms.js
+
+      - name: Post-deploy verify published js/microcms.js
+        # 実際に公開された js を取得し、200・NaganawaNews定義・プレースホルダー無しを確認。
+        run: |
+          url="https://naganawa-k.co.jp/js/microcms.js"
+          code=000
+          for i in $(seq 1 6); do
+            code=$(curl -s -o /tmp/pub_microcms.js -w "%{http_code}" "$url" || echo 000)
+            [ "$code" = "200" ] && break
+            echo "反映待ち... ($i) status=$code"; sleep 10
+          done
+          echo "----- published headers -----"
+          curl -s -I "$url" | grep -iE 'content-type|content-length|last-modified' || true
+          echo "-----------------------------"
+          echo "published status: $code"
+          if [ "$code" != "200" ]; then echo "::error::公開 js/microcms.js が $code（404等）。"; exit 1; fi
+          if ! grep -q "NaganawaNews" /tmp/pub_microcms.js; then echo "::error::公開jsに NaganawaNews が見つかりません。"; exit 1; fi
+          if grep -q "__MICROCMS_API_KEY__" /tmp/pub_microcms.js; then echo "::error::公開jsにプレースホルダーが残存。"; exit 1; fi
+          echo "OK: /js/microcms.js は 200・NaganawaNews定義あり・プレースホルダー無し。"

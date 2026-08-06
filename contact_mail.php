@@ -237,7 +237,8 @@ if ($phase === 'send') {
     date_default_timezone_set('Asia/Tokyo');
 
     // --- 件名を動的生成（お名前を挿入）---
-    $name_for_subject = htmlspecialchars_decode($data['name']);
+    // 名前に改行が含まれてもヘッダーインジェクションされないよう CR/LF を除去。
+    $name_for_subject = trim(preg_replace('/[\r\n]+/', ' ', htmlspecialchars_decode($data['name'])));
     if ($name_for_subject === '') { $name_for_subject = 'お客様'; }
     $subject = str_replace('{name}', $name_for_subject, $subject_template);
 
@@ -254,49 +255,74 @@ if ($phase === 'send') {
     $admin_text .= "お客様への返信は、このメールにそのまま「返信」してください（返信先＝お客様のアドレス）。\n\n";
     $admin_text .= $mail_body;
 
-    // --- 管理者宛メール送信 ---
-    // From＝会社アドレス($mailfrom)。お客様アドレスは Reply-To に設定（なりすまし・迷惑対策）。
-    // 件名・本文・差出人名は ISO-2022-JP に変換し、文字化けを防止。
-    $headers  = "From: " . mb_encode_mimeheader($mailfrom_name) . " <{$mailfrom}>\r\n";
+    // ============================================================
+    // ① 管理者宛メール（会社受信箱への通知）＝ 最重要
+    //   To          : $mailto（会社の受信先 naganawa.com@ace.ocn.ne.jp）
+    //   From        : $mailfrom（自社ドメイン。Canonetで送信可能なアドレス）
+    //   Reply-To    : お客様のアドレス（管理者が「返信」でそのままお客様へ）
+    //   Return-Path : $mailfrom を -f で明示（★今回の修正の要点）
+    //
+    //   ▼原因：これまで -f（エンベロープFrom＝Return-Path）を指定していなかったため、
+    //     Return-Path がサーバ既定（例：apache@サーバホスト名）になり、From の
+    //     自社ドメインと不一致に。OCN(ace.ocn.ne.jp)はこの不一致を「なりすまし」と
+    //     見なし、ローカルMTA受理後に破棄していた。そのため mb_send_mail は true を
+    //     返し「送信完了画面」は出るのに、会社宛だけ届かない状態だった。
+    //     （お客様宛の自動返信は受信側が緩く到達していた。）
+    //   本文・件名の文字コード変換は mb_send_mail に一任（本文はUTF-8のまま渡す。
+    //     以前は mb_convert_encoding で ISO-2022-JP に変換してから mb_send_mail に
+    //     渡しており、二重変換で文字化けの原因になっていた）。
+    // ============================================================
+    // -f の値は設定ファイルの定数（$mailfrom）のみ。ユーザー入力は使わない（安全）。
+    $envelope_param = "-f{$mailfrom}";
+
+    $admin_headers  = "From: " . mb_encode_mimeheader($mailfrom_name) . " <{$mailfrom}>\r\n";
     if ($visitor_email !== '') {
-        $headers .= "Reply-To: {$visitor_email}\r\n";
+        $admin_headers .= "Reply-To: {$visitor_email}\r\n";
     }
-    $headers .= "Content-Type: text/plain; charset=ISO-2022-JP";
+    // Content-Type は mb_send_mail が付与するため手動指定しない。
 
-    $admin_body = mb_convert_encoding($admin_text, 'ISO-2022-JP', 'UTF-8');
-    $result = @mb_send_mail($mailto, $subject, $admin_body, $headers);
+    $admin_ok = @mb_send_mail($mailto, $subject, $admin_text, $admin_headers, $envelope_param);
 
-    if (!$result) {
-        $last = error_get_last();
-        log_mail("NG: 管理者宛メール送信に失敗しました。to={$mailto} from={$mailfrom} PHPエラー=" . ($last ? $last['message'] : '不明'));
-        header("Location: {$error_url}");
-        exit;
-    }
-    log_mail("OK: 管理者宛メール送信成功。to={$mailto}");
-
-    // --- 自動返信メール送信（お客様宛）---
-    // From＝会社アドレス($mailfrom)＋会社名。返信先は会社受信箱($mailto)。
+    // ② 自動返信メール（お客様宛）
+    //   From＝$mailfrom＋会社名。Reply-To＝会社受信箱($mailto)。Return-Path も -f で明示。
+    $reply_ok = null; // 送信しなかった場合は null（判定対象外）
     if ($auto_reply && $visitor_email !== '') {
         $reply_body = str_replace(
             ['{name}', '{mail_body}'],
             [htmlspecialchars_decode($data['name']), $mail_body],
             $auto_reply_body
         );
-        $reply_body     = mb_convert_encoding($reply_body, 'ISO-2022-JP', 'UTF-8');
         $reply_headers  = "From: " . mb_encode_mimeheader($auto_reply_from_name) . " <{$mailfrom}>\r\n";
         $reply_headers .= "Reply-To: {$mailto}\r\n";
-        $reply_headers .= "Content-Type: text/plain; charset=ISO-2022-JP";
 
-        $reply_result = @mb_send_mail($visitor_email, $auto_reply_subject, $reply_body, $reply_headers);
-        if (!$reply_result) {
-            $last = error_get_last();
-            // 自動返信の失敗は致命的ではないため、記録のみ行い処理は継続
-            log_mail("WARN: 自動返信メール送信に失敗しました。PHPエラー=" . ($last ? $last['message'] : '不明'));
-        } else {
-            log_mail("OK: 自動返信メール送信成功。");
-        }
+        $reply_ok = @mb_send_mail($visitor_email, $auto_reply_subject, $reply_body, $reply_headers, $envelope_param);
     }
 
+    // ============================================================
+    // 戻り値を「別々に」判定する（#8）
+    // ============================================================
+    // --- 自動返信の結果を記録（失敗しても致命的ではないので継続）---
+    if ($reply_ok === false) {
+        $last = error_get_last();
+        log_mail("WARN: 自動返信メール送信に失敗。to=お客様 PHPエラー=" . ($last ? $last['message'] : '不明'));
+    } elseif ($reply_ok === true) {
+        log_mail("OK: 自動返信メール送信（ローカルMTA受理）。");
+    }
+
+    // --- 管理者宛の結果を判定（#9：失敗時は「完了」にせずエラー画面＋ログ）---
+    if ($admin_ok === false) {
+        $last = error_get_last();
+        log_mail(
+            "NG: 管理者宛メール送信に失敗（mb_send_mail=false）。" .
+            "to={$mailto} from={$mailfrom} envelope(Return-Path)={$mailfrom} " .
+            "件名バイト長=" . strlen($subject) . " PHPエラー=" . ($last ? $last['message'] : '不明')
+        );
+        header("Location: {$error_url}");
+        exit;
+    }
+    log_mail("OK: 管理者宛メール送信（ローカルMTA受理）。to={$mailto} envelope(Return-Path)={$mailfrom}");
+
+    // ここまで来た場合のみ「送信完了」とする
     header("Location: {$thanks_url}");
     exit;
 }

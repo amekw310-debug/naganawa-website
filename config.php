@@ -17,6 +17,12 @@ $mailto = "naganawa.com@ace.ocn.ne.jp";
 //   受信拒否・破棄される（実測で確認済み）。
 //   フォールバックで訪問者アドレスは Reply-To に入れる。
 //   ↓ CANONETで送信できる自社ドメインのアドレスに合わせてください。
+// ※このアドレスは Return-Path（エンベロープFrom / mail の -f）にも使用します。
+//   From と Return-Path のドメインを揃えることで、OCN側の受信拒否（会社宛だけ
+//   届かない現象）を回避します。CANONET上でこのアドレスが送信可能で、かつ
+//   naganawa-k.co.jp の SPF に CANONET の送信サーバが含まれている必要があります。
+//   （このメールボックスが未整備の場合は、CANONETで実在・送信可能な自社ドメイン
+//     アドレスに変更してください。ここ1か所を直せば送信元とReturn-Pathの両方に反映されます。）
 $mailfrom      = "info@naganawa-k.co.jp";
 $mailfrom_name = "長縄工務店 お問い合わせフォーム";
 

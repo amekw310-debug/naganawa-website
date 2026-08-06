@@ -30,10 +30,20 @@ jobs:
           # 公開ディレクトリ。手動アップロード時にファイルを置いている
           # サーバー上のフォルダに合わせてください（例: ./ , ./public_html/ , ./www/ , ./htdocs/ ）。
           server-dir: ./htdocs/
-          # 開発用ファイルはサーバーに送りません。
+          # 開発用ファイルはサーバー(htdocs)に送りません（本番に不要）。
+          # ※既にサーバー上に残っている旧・開発ファイルは自動削除されません。
+          #   下記に該当する既存ファイルは手動またはFTPで削除してください。
           exclude: |
             **/.git*
             **/.git*/**
             .github/**
             README.md
             **/.DS_Store
+            scripts/**
+            templates/**
+            docs/**
+            partials/**
+            package.json
+            package-lock.json
+            **/*.md
+            **/contact_mail_error.log

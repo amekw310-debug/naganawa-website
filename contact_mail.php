@@ -269,9 +269,10 @@ if ($phase === 'send') {
     // ============================================================
     // ① 管理者宛メール（会社受信箱への通知）＝ 最重要
     //   To          : $mailto（会社の受信先 naganawa.com@ace.ocn.ne.jp）
-    //   From        : $mailfrom（自社ドメイン。Canonetで送信可能なアドレス）
+    //   From        : $mailfrom（会社の実在アドレス naganawa.com@ace.ocn.ne.jp。
+    //                 訪問者のアドレスは From に使わない）
     //   Reply-To    : お客様のアドレス（管理者が「返信」でそのままお客様へ）
-    //   Return-Path : $mailfrom を -f で明示（★今回の修正の要点）
+    //   Return-Path : $mailfrom を -f で明示（From と一致させる）
     //
     //   ▼原因：これまで -f（エンベロープFrom＝Return-Path）を指定していなかったため、
     //     Return-Path がサーバ既定（例：apache@サーバホスト名）になり、From の

@@ -114,17 +114,18 @@
       </div>
 
       <!-- ============================================================
-           [一時停止中] お問い合わせフォーム（管理者宛メール不具合の修正が完了するまで）
-           ・送信しても会社宛通知が届かず取りこぼす恐れがあるため、フォームを
-             停止し、電話案内を表示しています。
-           ・フォームのコードは削除していません。下の
-             <template id="contact-form-suspended"> 内にそのまま保持しており、
-             template の中身は表示・送信されません。
-           ▼ 元に戻す手順（修正完了後）：
-             1) すぐ下の <div class="form-notice"> … </div>（案内ブロック）を削除
-             2) <template id="contact-form-suspended"> の開始タグ行と、対応する
-                </template> の終了タグ行の "2行だけ" を削除（中のフォームは残す）
+           お問い合わせフォーム（通常運用中）
+           一時停止の案内は下の <template id="contact-suspend-notice"> 内に
+           コードとして保持しています（template の中身は表示されません）。
+           ▼ 再度すぐ一時停止に戻す手順：
+             1) config.php の $form_suspended = true;（サーバ側で送信受付を停止）
+             2) 下の <template id="contact-suspend-notice"> と </template> の
+                2行を外して案内ブロックを表示
+             3) 下の form-lead / form-legend / <form>〜</form> を <template> で
+                囲んで非表示にする
            ============================================================ -->
+      <!-- [一時停止用の案内：コード保持のみ。<template>内は表示されません] -->
+      <template id="contact-suspend-notice">
       <div class="form-notice" role="status" style="max-width:640px;margin:0 auto;background:#fff;border:1px solid #e3e8ee;border-left:5px solid var(--accent);border-radius:12px;padding:36px 28px;text-align:center;">
         <p style="font-size:1.1rem;font-weight:700;color:var(--navy-dark);margin:0 0 14px;">
           お問い合わせフォームは現在調整中です。
@@ -140,9 +141,9 @@
           （スマートフォンはタップで発信できます／受付：平日 8:00〜17:00）
         </p>
       </div>
+      </template>
 
-      <!-- ▼▼▼ 一時停止中のフォーム本体（<template>内は表示・送信されません／修正後に復帰）▼▼▼ -->
-      <template id="contact-form-suspended">
+      <!-- 入力フォーム（通常運用中） -->
       <p class="form-lead">
         下記フォームにご入力のうえ「確認画面へ進む」を押してください。<br>
         工事のご相談・お見積り・採用に関するご質問など、お気軽にお問い合わせください。
@@ -206,8 +207,6 @@
           ご入力いただいた個人情報は、お問い合わせへの対応のみに使用いたします。
         </p>
       </form>
-      </template>
-      <!-- ▲▲▲ 一時停止中のフォーム本体 ここまで ▲▲▲ -->
     </div>
   </section>
 

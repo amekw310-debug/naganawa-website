@@ -27,6 +27,17 @@ function log_mail($message) {
 $phase = isset($_POST['phase']) ? $_POST['phase'] : '';
 
 // ----------------------------------------
+// フォーム一時停止中は一切受け付けない（取りこぼし防止）。
+// config.php の $form_suspended を false に戻すと通常運用に復帰します。
+// 確認画面・送信・完了画面のいずれにも進めず、案内ページへ戻します。
+// ----------------------------------------
+if (!empty($form_suspended)) {
+    log_mail('INFO: フォーム一時停止中のため受付をスキップしました（config.php の $form_suspended=true）。');
+    header("Location: contact.html");
+    exit;
+}
+
+// ----------------------------------------
 // スパム対策（ハニーポット）
 // 入力フォームに人間には見えない項目 "website" を置いています。
 // bot はこれを自動入力しがちなので、値が入っていれば送信せず破棄します。

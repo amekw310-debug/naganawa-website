@@ -113,6 +113,36 @@
         <h2 class="section-title">お問い合わせ</h2>
       </div>
 
+      <!-- ============================================================
+           [一時停止中] お問い合わせフォーム（管理者宛メール不具合の修正が完了するまで）
+           ・送信しても会社宛通知が届かず取りこぼす恐れがあるため、フォームを
+             停止し、電話案内を表示しています。
+           ・フォームのコードは削除していません。下の
+             <template id="contact-form-suspended"> 内にそのまま保持しており、
+             template の中身は表示・送信されません。
+           ▼ 元に戻す手順（修正完了後）：
+             1) すぐ下の <div class="form-notice"> … </div>（案内ブロック）を削除
+             2) <template id="contact-form-suspended"> の開始タグ行と、対応する
+                </template> の終了タグ行の "2行だけ" を削除（中のフォームは残す）
+           ============================================================ -->
+      <div class="form-notice" role="status" style="max-width:640px;margin:0 auto;background:#fff;border:1px solid #e3e8ee;border-left:5px solid var(--accent);border-radius:12px;padding:36px 28px;text-align:center;">
+        <p style="font-size:1.1rem;font-weight:700;color:var(--navy-dark);margin:0 0 14px;">
+          お問い合わせフォームは現在調整中です。
+        </p>
+        <p style="color:var(--text-sub);line-height:1.9;margin:0 0 24px;">
+          お急ぎの方は、下記までお電話ください。<br>
+          ご不便をおかけし、申し訳ございません。
+        </p>
+        <a href="tel:0568816099" class="btn btn-accent btn-lg" style="display:inline-block;">
+          TEL：0568-81-6099
+        </a>
+        <p style="color:var(--text-sub);font-size:0.85rem;margin:16px 0 0;">
+          （スマートフォンはタップで発信できます／受付：平日 8:00〜17:00）
+        </p>
+      </div>
+
+      <!-- ▼▼▼ 一時停止中のフォーム本体（<template>内は表示・送信されません／修正後に復帰）▼▼▼ -->
+      <template id="contact-form-suspended">
       <p class="form-lead">
         下記フォームにご入力のうえ「確認画面へ進む」を押してください。<br>
         工事のご相談・お見積り・採用に関するご質問など、お気軽にお問い合わせください。
@@ -176,6 +206,8 @@
           ご入力いただいた個人情報は、お問い合わせへの対応のみに使用いたします。
         </p>
       </form>
+      </template>
+      <!-- ▲▲▲ 一時停止中のフォーム本体 ここまで ▲▲▲ -->
     </div>
   </section>
 

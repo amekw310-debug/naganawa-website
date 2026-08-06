@@ -47,3 +47,6 @@ jobs:
             package-lock.json
             **/*.md
             **/contact_mail_error.log
+            # ↓ Canonet本番の js/microcms.js は実APIキー入りのため、
+            #   プレースホルダーのリポジトリ版で上書きしない（新着情報の取得が壊れる）。
+            js/microcms.js

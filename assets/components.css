@@ -47,6 +47,17 @@
 }
 .work-card__date{ font-size:13px; color:var(--text-sub, #6b7280); }
 
+/* ============ 施工実績カード：説明文（工事内容の抜粋）と状態表示 ============ */
+.work-card__desc{
+  font-size:13px; color:var(--text-sub,#6b7280); line-height:1.6; margin:8px 0 12px;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.work-card__image--noimg{ background:#eef1f5; }
+.works-loading, .works-empty{
+  grid-column:1 / -1; text-align:center; color:#6b7280; padding:40px 16px; font-size:15px;
+}
+
+
 /* ============ 施工実績：Coming Soon プレースホルダー（データ未受領時） ============ */
 /* クリック不可カード（<div> で実装）。ホバーの浮きも抑制。 */
 .work-card--coming{ cursor:default; }

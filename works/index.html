@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css?v=8">
-  <link rel="stylesheet" href="../assets/components.css?v=8">
+  <link rel="stylesheet" href="../assets/components.css?v=9">
 </head>
 <body>
 
@@ -88,50 +88,9 @@
         <button class="works-filter__item" type="button">その他</button>
       </div>
 
-      <!-- 施工実績カード一覧 -->
-      <div class="works-grid">
-
-        <!-- microCMS Loop Start -->
-        <!-- ↓ 施工実績データ未受領のため、暫定で「Coming Soon」ダミーを3件表示。
-             microCMS連携時は、この .work-card 1件分を記事数だけ繰り返します。
-             その際、外側を <a class="work-card" href="（詳細ページ）"> に戻し、
-             .work-card__image--placeholder を実画像 <img> に、カテゴリ／工事名／
-             完成年月を実データに差し替えてください。 -->
-        <div class="work-card work-card--coming" aria-disabled="true">
-          <div class="work-card__image work-card__image--placeholder">
-            <span class="work-card__coming">Coming Soon</span>
-          </div>
-          <div class="work-card__body">
-            <span class="work-card__category">施工実績</span>
-            <h3 class="work-card__title">施工実績を準備中です</h3>
-            <p class="work-card__date">掲載準備中</p>
-          </div>
-        </div>
-        <!-- microCMS Loop End -->
-
-        <!-- ↓ レイアウト確認用ダミー（同上）。連携時は上記Loop内が繰り返されます -->
-        <div class="work-card work-card--coming" aria-disabled="true">
-          <div class="work-card__image work-card__image--placeholder">
-            <span class="work-card__coming">Coming Soon</span>
-          </div>
-          <div class="work-card__body">
-            <span class="work-card__category">施工実績</span>
-            <h3 class="work-card__title">施工実績を準備中です</h3>
-            <p class="work-card__date">掲載準備中</p>
-          </div>
-        </div>
-
-        <div class="work-card work-card--coming" aria-disabled="true">
-          <div class="work-card__image work-card__image--placeholder">
-            <span class="work-card__coming">Coming Soon</span>
-          </div>
-          <div class="work-card__body">
-            <span class="work-card__category">施工実績</span>
-            <h3 class="work-card__title">施工実績を準備中です</h3>
-            <p class="work-card__date">掲載準備中</p>
-          </div>
-        </div>
-
+      <!-- 施工実績カード一覧（microCMS の works を js/microcms.js が描画） -->
+      <div class="works-grid" id="works-grid">
+        <p class="works-loading">読み込み中...</p>
       </div><!-- /.works-grid -->
 
     </div>
@@ -188,6 +147,12 @@
   window.addEventListener('scroll', () => {
     header.classList.toggle('scrolled', window.scrollY > 60);
   });
+</script>
+
+<!-- microCMS: 施工実績一覧＋カテゴリー絞り込みを描画 -->
+<script src="../js/microcms.js"></script>
+<script>
+  NaganawaNews.initWorksList({ gridId: 'works-grid', hrefPrefix: '', filterSelector: '.works-filter__item' });
 </script>
 
 </body>

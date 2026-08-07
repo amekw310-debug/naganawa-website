@@ -24,6 +24,7 @@
   var SERVICE_DOMAIN = 'naganawa-k'; // ← あなたのサービスドメイン（公開情報）
   var API_KEY        = '__MICROCMS_API_KEY__'; // ← デプロイ時にSecretsから注入（実値はコミットしない）
   var NEWS_ENDPOINT  = 'news';
+  var WORKS_ENDPOINT = 'works'; // ← microCMS の「施工実績」API（エンドポイント）ID
 
   var API_BASE = 'https://' + SERVICE_DOMAIN + '.microcms.io/api/v1/';
 
@@ -229,11 +230,187 @@
     });
   }
 
+  /* ============================================================
+   *  施工実績（works）microCMS 連携
+   *  ------------------------------------------------------------
+   *  ※ microCMS のフィールドIDが確定できない環境向けに、代表的な
+   *    フィールドID候補を順に探して解決します（推測で1つに決め打ち
+   *    せず、実スキーマに合わせて動くようにするため）。実際のIDは
+   *    プレビューの Console ログ（initWorksList / initWorksDetail）で
+   *    確認できます（確認後にログは削除）。
+   *  カテゴリ表示名 → 色クラス（work-card__category--* / work-detail__category--*）
+   * ============================================================ */
+  var WORKS_CATEGORY_CLASS = { '舗装工事': 'paving', '土木工事': 'civil', 'その他': 'other' };
+
+  function firstDefined(obj, keys) {
+    for (var i = 0; i < keys.length; i++) {
+      var v = obj[keys[i]];
+      if (v !== undefined && v !== null && v !== '') return v;
+    }
+    return '';
+  }
+  function imgUrl(v) { // 画像フィールド値 → URL（{url}オブジェクト/文字列/配列に対応）
+    if (!v) return '';
+    if (typeof v === 'string') return v;
+    if (Array.isArray(v)) v = v[0];
+    if (v && typeof v === 'object') return v.url || '';
+    return '';
+  }
+  function stripHtml(s) { return String(s).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function truncate(s, n) { s = String(s); return s.length > n ? s.slice(0, n) + '…' : s; }
+  function looksLikeHtml(s) { return /<[a-z][\s\S]*>/i.test(String(s)); }
+
+  function worksTitle(item) { return firstDefined(item, ['title', 'name', 'workName', 'work_name', 'constructionName', 'projectName']) || '（無題）'; }
+  function worksBody(item) { return firstDefined(item, ['content', 'body', 'description', 'detail', 'overview', 'text', 'worksContent', 'constructionContent']); }
+  function worksLocation(item) { return firstDefined(item, ['location', 'place', 'area', 'address', 'site']); }
+  function worksCategory(item) {
+    var c = firstDefined(item, ['category', 'type', 'workType', 'constructionType', 'kind', 'genre']);
+    if (c == null || c === '') return '';
+    if (Array.isArray(c)) c = c[0];
+    if (c && typeof c === 'object') return c.name || c.title || c.label || c.value || '';
+    return String(c);
+  }
+  function worksImage(item) { return imgUrl(firstDefined(item, ['mainImage', 'main_image', 'mainimage', 'image', 'thumbnail', 'eyecatch', 'photo', 'mainPhoto'])); }
+  function worksDate(item) {
+    var raw = firstDefined(item, ['completionDate', 'completedDate', 'completedAt', 'completion', 'completeDate', 'date', 'publishDate', 'publishedAt', 'createdAt']);
+    if (!raw) return '';
+    var d = new Date(raw);
+    if (isNaN(d.getTime())) return String(raw);
+    var mm = ('0' + (d.getMonth() + 1)).slice(-2), dd = ('0' + d.getDate()).slice(-2);
+    return d.getFullYear() + '.' + mm + '.' + dd;
+  }
+  function worksGallery(item) {
+    var g = firstDefined(item, ['gallery', 'photos', 'images', 'subImages', 'sub_images', 'constructionPhotos']);
+    if (!g) return [];
+    if (!Array.isArray(g)) g = [g];
+    return g.map(imgUrl).filter(Boolean);
+  }
+  function worksCatClass(cat) { return WORKS_CATEGORY_CLASS[cat] || 'other'; }
+
+  function fetchWorksList(limit) {
+    // 公開中のみ返る（GET用APIキー）。orders は必ず存在する publishedAt を使用
+    // （不明なフィールドを orders に渡すと microCMS が 400 を返すため）。
+    return request(WORKS_ENDPOINT + '?limit=' + (limit || 100) + '&orders=-publishedAt')
+      .then(function (data) { return (data && data.contents) || []; });
+  }
+  function fetchWorksOne(id) { return request(WORKS_ENDPOINT + '/' + encodeURIComponent(id)); }
+
+  function worksCardHtml(item, hrefPrefix) {
+    var title = worksTitle(item), cat = worksCategory(item), date = worksDate(item), img = worksImage(item);
+    var descRaw = worksBody(item);
+    var desc = descRaw ? truncate(stripHtml(descRaw), 60) : '';
+    var href = hrefPrefix + 'detail.html?id=' + encodeURIComponent(item.id);
+    var imageHtml = img
+      ? '<div class="work-card__image"><img src="' + escapeHtml(img) + '" alt="' + escapeHtml(title) + '" loading="lazy" decoding="async"></div>'
+      : '<div class="work-card__image work-card__image--noimg"></div>';
+    var catHtml = cat ? '<span class="work-card__category work-card__category--' + worksCatClass(cat) + '">' + escapeHtml(cat) + '</span>' : '';
+    return '<a class="work-card" href="' + href + '" data-category="' + escapeHtml(cat) + '">' +
+        imageHtml +
+        '<div class="work-card__body">' +
+          catHtml +
+          '<h3 class="work-card__title">' + escapeHtml(title) + '</h3>' +
+          (desc ? '<p class="work-card__desc">' + escapeHtml(desc) + '</p>' : '') +
+          (date ? '<p class="work-card__date">' + escapeHtml(date) + '</p>' : '') +
+        '</div>' +
+      '</a>';
+  }
+
+  /* 施工実績 一覧：microCMSから取得してカード表示＋カテゴリ絞り込み */
+  function initWorksList(options) {
+    options = options || {};
+    var el = global.document.getElementById(options.gridId || 'works-grid');
+    if (!el) return;
+    var hrefPrefix = options.hrefPrefix != null ? options.hrefPrefix : '';
+    var buttons = Array.prototype.slice.call(global.document.querySelectorAll(options.filterSelector || '.works-filter__item'));
+    var all = [], active = 'すべて';
+    function attachImgError() {
+      Array.prototype.forEach.call(el.querySelectorAll('.work-card__image img'), function (im) {
+        im.addEventListener('error', function () { im.style.display = 'none'; });
+      });
+    }
+    function apply() {
+      var list = (active === 'すべて') ? all : all.filter(function (it) { return worksCategory(it) === active; });
+      if (!list.length) { el.innerHTML = '<p class="works-empty">該当する施工実績はありません。</p>'; return; }
+      el.innerHTML = list.map(function (it) { return worksCardHtml(it, hrefPrefix); }).join('');
+      attachImgError();
+    }
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        buttons.forEach(function (b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+        active = (btn.textContent || '').trim();
+        apply();
+      });
+    });
+    el.innerHTML = '<p class="works-loading">読み込み中...</p>';
+    fetchWorksList(100).then(function (items) {
+      // 【一時的なデバッグ】実フィールドID確認用。確認後に削除します。
+      try { console.log('[works] 取得件数:', items.length, '／先頭データ:', items[0]); } catch (e) {}
+      all = items; apply();
+    }).catch(function (err) {
+      console.error('[microCMS] works取得に失敗:', err);
+      el.innerHTML = '<p class="works-empty">施工実績を読み込めませんでした。</p>';
+    });
+  }
+
+  /* 施工実績 詳細：?id= の1件を取得して表示 */
+  function initWorksDetail(options) {
+    options = options || {};
+    var el = global.document.getElementById(options.rootId || 'works-detail');
+    if (!el) return;
+    var crumb = options.crumbId ? global.document.getElementById(options.crumbId) : null;
+    var params = new URLSearchParams(global.location.search);
+    var id = params.get('id');
+    if (!id) { el.innerHTML = '<p class="works-empty">施工実績が見つかりません。</p>'; return; }
+    el.innerHTML = '<p class="works-loading">読み込み中...</p>';
+    fetchWorksOne(id).then(function (item) {
+      // 【一時的なデバッグ】実フィールドID確認用。確認後に削除します。
+      try { console.log('[works detail] item:', item); } catch (e) {}
+      var title = worksTitle(item), cat = worksCategory(item), date = worksDate(item);
+      var img = worksImage(item), body = worksBody(item), loc = worksLocation(item), gallery = worksGallery(item);
+      var meta = '';
+      if (cat) meta += '<li class="work-detail__meta-item"><span class="work-detail__meta-label">工事種別</span><span class="work-detail__meta-value">' + escapeHtml(cat) + '</span></li>';
+      if (loc) meta += '<li class="work-detail__meta-item"><span class="work-detail__meta-label">施工場所</span><span class="work-detail__meta-value">' + escapeHtml(loc) + '</span></li>';
+      if (date) meta += '<li class="work-detail__meta-item"><span class="work-detail__meta-label">完成年月</span><span class="work-detail__meta-value">' + escapeHtml(date) + '</span></li>';
+      var bodyHtml = body ? (looksLikeHtml(body) ? body : '<p>' + escapeHtml(body).replace(/\n/g, '<br>') + '</p>') : '';
+      var galleryHtml = gallery.length
+        ? '<h2 class="work-detail__section-title">施工写真</h2><div class="work-detail__gallery">' +
+          gallery.map(function (u) { return '<figure class="work-detail__gallery-item"><img src="' + escapeHtml(u) + '" alt="' + escapeHtml(title) + ' 施工写真" loading="lazy"></figure>'; }).join('') +
+          '</div>'
+        : '';
+      el.innerHTML =
+        '<article class="work-detail">' +
+          (cat ? '<span class="work-detail__category work-detail__category--' + worksCatClass(cat) + '">' + escapeHtml(cat) + '</span>' : '') +
+          '<h1 class="work-detail__title">' + escapeHtml(title) + '</h1>' +
+          (img ? '<div class="work-detail__main-image"><img src="' + escapeHtml(img) + '" alt="' + escapeHtml(title) + '"></div>' : '') +
+          (meta ? '<ul class="work-detail__meta">' + meta + '</ul>' : '') +
+          (bodyHtml ? '<h2 class="work-detail__section-title">工事内容</h2><div class="work-detail__content">' + bodyHtml + '</div>' : '') +
+          galleryHtml +
+        '</article>';
+      if (crumb) crumb.textContent = title;
+      global.document.title = title + '｜施工実績｜長縄工務店';
+      // 画像読み込み失敗時は該当の枠ごと非表示（壊れた画像アイコンを出さない）
+      Array.prototype.forEach.call(el.querySelectorAll('img'), function (im) {
+        im.addEventListener('error', function () {
+          var p = im.closest ? im.closest('.work-detail__main-image, .work-detail__gallery-item') : im.parentNode;
+          if (p) p.style.display = 'none';
+        });
+      });
+    }).catch(function (err) {
+      console.error('[microCMS] works詳細の取得に失敗:', err);
+      el.innerHTML = '<p class="works-empty">施工実績が見つかりません。</p>';
+    });
+  }
+
   global.NaganawaNews = {
     initTop: initTop,
     initList: initList,
     initDetail: initDetail,
+    initWorksList: initWorksList,
+    initWorksDetail: initWorksDetail,
     fetchNewsList: fetchNewsList,
-    fetchNewsOne: fetchNewsOne
+    fetchNewsOne: fetchNewsOne,
+    fetchWorksList: fetchWorksList,
+    fetchWorksOne: fetchWorksOne
   };
 })(window);

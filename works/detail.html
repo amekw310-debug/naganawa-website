@@ -28,7 +28,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css?v=8">
-  <link rel="stylesheet" href="../assets/components.css?v=8">
+  <link rel="stylesheet" href="../assets/components.css?v=9">
 </head>
 <body>
 
@@ -79,76 +79,18 @@
         <span class="breadcrumb-sep">›</span>
         <a href="index.html">施工実績</a>
         <span class="breadcrumb-sep">›</span>
-        <span>市道1号線 舗装補修工事</span>
+        <span id="crumb-title">施工実績</span>
       </nav>
 
-      <article class="work-detail">
+      <!-- microCMS の works から ?id= の1件を js/microcms.js が描画します -->
+      <div id="works-detail">
+        <p class="works-loading">読み込み中...</p>
+      </div>
 
-        <!-- ▼microCMS: 工事種別（カテゴリ）／色は work-detail__category--paving|civil|other を切替 -->
-        <span class="work-detail__category work-detail__category--paving">舗装工事</span>
-        <!-- ▼microCMS: 工事名（title） -->
-        <h1 class="work-detail__title">市道1号線 舗装補修工事</h1>
-
-        <!-- ▼microCMS: メイン画像（mainImage） -->
-        <div class="work-detail__main-image">
-          <img src="../images/IMG_3746.jpeg" alt="市道1号線 舗装補修工事 メイン写真">
-        </div>
-
-        <!-- ▼microCMS: 工事概要（工事種別 / 施工場所 / 完成年月） -->
-        <ul class="work-detail__meta">
-          <li class="work-detail__meta-item">
-            <span class="work-detail__meta-label">工事種別</span>
-            <span class="work-detail__meta-value">舗装工事</span>
-          </li>
-          <li class="work-detail__meta-item">
-            <span class="work-detail__meta-label">施工場所</span>
-            <span class="work-detail__meta-value">愛知県春日井市</span>
-          </li>
-          <li class="work-detail__meta-item">
-            <span class="work-detail__meta-label">完成年月</span>
-            <span class="work-detail__meta-value">2026年6月</span>
-          </li>
-        </ul>
-
-        <!-- ▼microCMS: 工事内容（content / リッチエディタHTMLをそのまま流し込み） -->
-        <h2 class="work-detail__section-title">工事内容</h2>
-        <div class="work-detail__content">
-          <p>
-            経年劣化により損傷が進んでいた市道1号線の路面について、既設アスファルトの
-            切削オーバーレイによる舗装補修を行いました。フィニッシャーによる高精度な
-            敷きならしと、タンデムローラーによる入念な締固めにより、平坦性の高い走行
-            快適な路面へと生まれ変わりました。
-          </p>
-          <p>
-            交通量の多い路線のため、片側交互通行による安全管理を徹底し、周辺住民の皆さま
-            への影響を最小限に抑えながら工期内に完了いたしました。
-          </p>
-        </div>
-
-        <!-- ▼microCMS: 施工写真（複数）ギャラリー -->
-        <h2 class="work-detail__section-title">施工写真</h2>
-        <div class="work-detail__gallery">
-          <!-- microCMS Loop Start -->
-          <!-- ↓ この施工写真1枚分を、登録枚数だけ繰り返します（現在はダミー） -->
-          <figure class="work-detail__gallery-item">
-            <img src="../images/IMG_3762.jpeg" alt="施工写真1">
-          </figure>
-          <!-- microCMS Loop End -->
-
-          <!-- ↓ 以下はレイアウト確認用ダミー -->
-          <figure class="work-detail__gallery-item">
-            <img src="../images/IMG_0911.jpeg" alt="施工写真2">
-          </figure>
-          <figure class="work-detail__gallery-item">
-            <img src="../images/IMG_1317.jpeg" alt="施工写真3">
-          </figure>
-        </div>
-
-        <div class="work-detail__back">
-          <a href="index.html" class="btn btn-accent btn-lg">施工実績一覧へ戻る</a>
-        </div>
-
-      </article>
+      <!-- 一覧へ戻る（常時表示） -->
+      <div class="work-detail__back">
+        <a href="index.html" class="btn btn-accent btn-lg">施工実績一覧へ戻る</a>
+      </div>
 
     </div>
   </section>
@@ -203,6 +145,12 @@
   window.addEventListener('scroll', () => {
     header.classList.toggle('scrolled', window.scrollY > 60);
   });
+</script>
+
+<!-- microCMS: ?id= の施工実績1件を描画 -->
+<script src="../js/microcms.js"></script>
+<script>
+  NaganawaNews.initWorksDetail({ rootId: 'works-detail', crumbId: 'crumb-title' });
 </script>
 
 </body>

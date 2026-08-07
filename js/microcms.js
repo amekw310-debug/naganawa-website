@@ -100,14 +100,38 @@
 
   /* ── フィールド抽出（スキーマ差異に強く）──────────────── */
   function pickDate(item) { return formatDateJST(item); }
-  function pickCategory(item) {
-    var c = item.category;
-    if (c == null) return '';
-    if (Array.isArray(c)) c = c[0];
-    if (typeof c === 'string') return c;
-    if (c && typeof c === 'object') return c.name || c.title || c.label || c.value || '';
-    return String(c);
+  /* ── カテゴリ抽出・比較（新着・施工実績で共通）──────────────
+   *  microCMS のカテゴリは 文字列 / 配列（セレクト・複数選択）/
+   *  オブジェクト（コンテンツ参照）のいずれでも返り得る。必ず
+   *  「カテゴリ名の配列」に正規化して扱い、比較は trim + NFKC
+   *  （全角半角のゆらぎ吸収）で行う。複数カテゴリのいずれかが一致
+   *  すれば該当とみなす（＝1件が複数カテゴリを持っても取りこぼさない）。
+   * ------------------------------------------------------------ */
+  var WORKS_CAT_KEYS = ['category', 'type', 'workType', 'constructionType', 'kind', 'genre'];
+  function extractCategories(raw) {
+    if (raw == null || raw === '') return [];
+    var arr = Array.isArray(raw) ? raw : [raw];
+    var out = [];
+    arr.forEach(function (v) {
+      if (v == null || v === '') return;
+      if (typeof v === 'string') { out.push(v); return; }
+      if (typeof v === 'object') { var n = v.name || v.title || v.label || v.value || v.id || ''; if (n) out.push(n); return; }
+      out.push(String(v));
+    });
+    return out;
   }
+  function normCat(s) { return String(s == null ? '' : s).trim().normalize('NFKC'); }
+  function categoryMatches(cats, active) {
+    if (active === 'すべて' || active === '') return true;
+    var a = normCat(active);
+    for (var i = 0; i < cats.length; i++) { if (normCat(cats[i]) === a) return true; }
+    return false;
+  }
+  function newsCategories(item) { return extractCategories(item.category); }
+  function worksCategories(item) { return extractCategories(firstDefined(item, WORKS_CAT_KEYS)); }
+
+  /* 表示用（タグ）：先頭カテゴリ名（前後空白除去） */
+  function pickCategory(item) { var c = newsCategories(item); return c.length ? String(c[0]).trim() : ''; }
   function pickTitle(item) { return item.title || item.name || '（無題）'; }
   function pickBody(item) { return item.content || item.body || item.text || ''; }
   /* サムネイル画像URL：microCMSの画像フィールドは {url,height,width} で返る。
@@ -119,7 +143,7 @@
     if (typeof t === 'object' && t.url) return t.url;
     return '';
   }
-  function categoryClass(cat) { return CATEGORY_CLASS[cat] || 'news-tag--other'; }
+  function categoryClass(cat) { return CATEGORY_CLASS[normCat(cat)] || CATEGORY_CLASS[cat] || 'news-tag--other'; }
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, function (m) {
@@ -177,9 +201,11 @@
     var active = 'すべて';
 
     function apply() {
+      if (!all.length) { showEmpty(el); return; } // 全体0件 → 「現在、お知らせはありません。」
       var list = (active === 'すべて')
         ? all
-        : all.filter(function (it) { return pickCategory(it) === active; });
+        : all.filter(function (it) { return categoryMatches(newsCategories(it), active); });
+      if (!list.length) { el.innerHTML = '<li class="news-empty">該当する記事はありません。</li>'; return; } // 全体はあるが該当カテゴリ0件
       renderList(el, list, hrefPrefix);
     }
 
@@ -194,7 +220,11 @@
 
     showLoading(el);
     fetchNewsList(100)
-      .then(function (items) { all = publishedSorted(items); apply(); }) // 公開済みのみ・公開日時順
+      .then(function (items) {
+        // 【一時的なデバッグ】カテゴリの実値・型を確認するため。確認後に削除します。
+        try { console.log('[news] category sample:', items.slice(0, 8).map(function (it) { return { raw: it.category, norm: newsCategories(it) }; })); } catch (e) {}
+        all = publishedSorted(items); apply(); // 公開済みのみ・公開日時順
+      })
       .catch(function (err) { console.error('[microCMS] 取得に失敗しました:', err); showEmpty(el); });
   }
 
@@ -305,13 +335,8 @@
   function worksTitle(item) { return firstDefined(item, ['title', 'name', 'workName', 'work_name', 'constructionName', 'projectName']) || '（無題）'; }
   function worksBody(item) { return firstDefined(item, ['content', 'body', 'description', 'detail', 'overview', 'text', 'worksContent', 'constructionContent']); }
   function worksLocation(item) { return firstDefined(item, ['location', 'place', 'area', 'address', 'site']); }
-  function worksCategory(item) {
-    var c = firstDefined(item, ['category', 'type', 'workType', 'constructionType', 'kind', 'genre']);
-    if (c == null || c === '') return '';
-    if (Array.isArray(c)) c = c[0];
-    if (c && typeof c === 'object') return c.name || c.title || c.label || c.value || '';
-    return String(c);
-  }
+  /* 表示用（タグ）：先頭カテゴリ名（前後空白除去）。判定は categoryMatches を使用 */
+  function worksCategory(item) { var c = worksCategories(item); return c.length ? String(c[0]).trim() : ''; }
   function worksImage(item) { return imgUrl(firstDefined(item, ['mainImage', 'main_image', 'mainimage', 'image', 'thumbnail', 'eyecatch', 'photo', 'mainPhoto'])); }
   /* 施工実績の表示日付：新着と同じ共通ロジック（日本時間・公開日時基準） */
   function worksDate(item) { return formatDateJST(item); }
@@ -321,7 +346,7 @@
     if (!Array.isArray(g)) g = [g];
     return g.map(imgUrl).filter(Boolean);
   }
-  function worksCatClass(cat) { return WORKS_CATEGORY_CLASS[cat] || 'other'; }
+  function worksCatClass(cat) { return WORKS_CATEGORY_CLASS[normCat(cat)] || WORKS_CATEGORY_CLASS[cat] || 'other'; }
 
   function fetchWorksList(limit) {
     // 公開中のみ返る（GET用APIキー）。orders は必ず存在する publishedAt を使用
@@ -351,6 +376,19 @@
       '</a>';
   }
 
+  /* 施工実績が0件のときの「Coming Soon」プレースホルダー（3件） */
+  function worksComingSoon() {
+    var one = '<div class="work-card work-card--coming" aria-disabled="true">' +
+        '<div class="work-card__image work-card__image--placeholder"><span class="work-card__coming">Coming Soon</span></div>' +
+        '<div class="work-card__body">' +
+          '<span class="work-card__category">施工実績</span>' +
+          '<h3 class="work-card__title">施工実績を準備中です</h3>' +
+          '<p class="work-card__date">掲載準備中</p>' +
+        '</div>' +
+      '</div>';
+    return one + one + one;
+  }
+
   /* 施工実績 一覧：microCMSから取得してカード表示＋カテゴリ絞り込み */
   function initWorksList(options) {
     options = options || {};
@@ -365,8 +403,9 @@
       });
     }
     function apply() {
-      var list = (active === 'すべて') ? all : all.filter(function (it) { return worksCategory(it) === active; });
-      if (!list.length) { el.innerHTML = '<p class="works-empty">該当する施工実績はありません。</p>'; return; }
+      if (!all.length) { el.innerHTML = worksComingSoon(); return; } // 全体0件 → Coming Soon 3件
+      var list = (active === 'すべて') ? all : all.filter(function (it) { return categoryMatches(worksCategories(it), active); });
+      if (!list.length) { el.innerHTML = '<p class="works-empty">該当する施工実績はありません。</p>'; return; } // 全体はあるが該当カテゴリ0件
       el.innerHTML = list.map(function (it) { return worksCardHtml(it, hrefPrefix); }).join('');
       attachImgError();
     }
@@ -380,8 +419,8 @@
     });
     el.innerHTML = '<p class="works-loading">読み込み中...</p>';
     fetchWorksList(100).then(function (items) {
-      // 【一時的なデバッグ】実フィールドID確認用。確認後に削除します。
-      try { console.log('[works] 取得件数:', items.length, '／先頭データ:', items[0]); } catch (e) {}
+      // 【一時的なデバッグ】カテゴリの実フィールドID・値・型を確認するため。確認後に削除します。
+      try { console.log('[works] 件数:', items.length, '／カテゴリ:', items.slice(0, 8).map(function (it) { return { raw: firstDefined(it, WORKS_CAT_KEYS), norm: worksCategories(it) }; }), '／先頭データ:', items[0]); } catch (e) {}
       all = publishedSorted(items); apply(); // 公開済みのみ・公開日時の新しい順
     }).catch(function (err) {
       console.error('[microCMS] works取得に失敗:', err);

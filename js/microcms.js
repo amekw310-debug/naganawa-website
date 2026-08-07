@@ -53,16 +53,53 @@
     return request(NEWS_ENDPOINT + '/' + encodeURIComponent(id));
   }
 
-  /* ── フィールド抽出（スキーマ差異に強く）──────────────── */
-  function pickDate(item) {
-    var raw = item.publishDate || item.date || item.publishedAt || item.createdAt || '';
-    if (!raw) return '';
-    var d = new Date(raw);
-    if (isNaN(d.getTime())) return String(raw);
-    var mm = ('0' + (d.getMonth() + 1)).slice(-2);
-    var dd = ('0' + d.getDate()).slice(-2);
-    return d.getFullYear() + '.' + mm + '.' + dd;
+  /* ── 公開日時の判定（新着・施工実績で共通）──────────────
+   *  ・日本時間(Asia/Tokyo)基準。閲覧端末のタイムゾーンに依存しない。
+   *  ・「年月日＋時刻」まで比較（絶対時刻で比較するので、ISO日時なら
+   *    ブラウザのTZに関係なく正しく公開判定される）。
+   *  ・公開日時フィールドの候補を優先順に解決
+   *    （新着=publishDate 等 / 施工実績=date 等 / 共通=microCMS標準 publishedAt）。
+   * ------------------------------------------------------------ */
+  var PUBLISH_FIELDS = ['publishDate', 'publishAt', 'publishedDate', 'releaseDate', 'date', 'completionDate', 'completedDate', 'constructionDate', 'workDate', 'publishedAt', 'createdAt'];
+  function toInstant(raw) {
+    if (raw == null || raw === '') return null;
+    raw = String(raw);
+    // 日付のみ(YYYY-MM-DD)は日本時間の 00:00 として解釈（TZずれ防止）
+    if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) raw = raw + 'T00:00:00+09:00';
+    var t = new Date(raw).getTime();
+    return isNaN(t) ? null : t;
   }
+  function publishInstant(item) {
+    for (var i = 0; i < PUBLISH_FIELDS.length; i++) {
+      var t = toInstant(item[PUBLISH_FIELDS[i]]);
+      if (t !== null) return t;
+    }
+    return null;
+  }
+  /* 日本時間で「公開済み」か（未来日時は false）。新着・施工実績で共通使用。 */
+  function isPublished(item) {
+    var t = publishInstant(item);
+    if (t === null) return true; // 公開日時が全く無い場合のみ従来どおり表示
+    return t <= Date.now();
+  }
+  /* 公開済みのみに絞り、公開日時の新しい順（時刻まで）に並べる */
+  function publishedSorted(items) {
+    return (items || []).filter(isPublished).sort(function (a, b) {
+      return (publishInstant(b) || 0) - (publishInstant(a) || 0);
+    });
+  }
+  /* 表示用 YYYY.MM.DD（日本時間で整形。閲覧端末のTZに依存しない） */
+  function formatDateJST(item) {
+    var t = publishInstant(item);
+    if (t === null) return '';
+    var p = {};
+    new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' })
+      .formatToParts(new Date(t)).forEach(function (x) { p[x.type] = x.value; });
+    return p.year + '.' + p.month + '.' + p.day;
+  }
+
+  /* ── フィールド抽出（スキーマ差異に強く）──────────────── */
+  function pickDate(item) { return formatDateJST(item); }
   function pickCategory(item) {
     var c = item.category;
     if (c == null) return '';
@@ -122,8 +159,8 @@
     var hrefPrefix = options.hrefPrefix != null ? options.hrefPrefix : 'news/';
     var limit = options.limit || 3;
     showLoading(el);
-    fetchNewsList(limit)
-      .then(function (items) { renderList(el, items.slice(0, limit), hrefPrefix); })
+    fetchNewsList(limit + 20) // 未来日時を除外するため多めに取得してから絞る
+      .then(function (items) { renderList(el, publishedSorted(items).slice(0, limit), hrefPrefix); })
       .catch(function (err) { console.error('[microCMS] 取得に失敗しました:', err); showEmpty(el); });
   }
 
@@ -157,7 +194,7 @@
 
     showLoading(el);
     fetchNewsList(100)
-      .then(function (items) { all = items; apply(); })
+      .then(function (items) { all = publishedSorted(items); apply(); }) // 公開済みのみ・公開日時順
       .catch(function (err) { console.error('[microCMS] 取得に失敗しました:', err); showEmpty(el); });
   }
 
@@ -175,6 +212,11 @@
     }
     el.innerHTML = '<p class="news-loading">読み込み中...</p>';
     fetchNewsOne(id).then(function (item) {
+      // 公開日時前は、URL直接アクセスでも表示しない（日本時間で判定）
+      if (!isPublished(item)) {
+        el.innerHTML = '<p class="news-empty">この記事はまだ公開されていません。</p>';
+        return;
+      }
       var date = pickDate(item);
       var cat = pickCategory(item);
       var title = pickTitle(item);
@@ -271,14 +313,8 @@
     return String(c);
   }
   function worksImage(item) { return imgUrl(firstDefined(item, ['mainImage', 'main_image', 'mainimage', 'image', 'thumbnail', 'eyecatch', 'photo', 'mainPhoto'])); }
-  function worksDate(item) {
-    var raw = firstDefined(item, ['completionDate', 'completedDate', 'completedAt', 'completion', 'completeDate', 'date', 'publishDate', 'publishedAt', 'createdAt']);
-    if (!raw) return '';
-    var d = new Date(raw);
-    if (isNaN(d.getTime())) return String(raw);
-    var mm = ('0' + (d.getMonth() + 1)).slice(-2), dd = ('0' + d.getDate()).slice(-2);
-    return d.getFullYear() + '.' + mm + '.' + dd;
-  }
+  /* 施工実績の表示日付：新着と同じ共通ロジック（日本時間・公開日時基準） */
+  function worksDate(item) { return formatDateJST(item); }
   function worksGallery(item) {
     var g = firstDefined(item, ['gallery', 'photos', 'images', 'subImages', 'sub_images', 'constructionPhotos']);
     if (!g) return [];
@@ -346,7 +382,7 @@
     fetchWorksList(100).then(function (items) {
       // 【一時的なデバッグ】実フィールドID確認用。確認後に削除します。
       try { console.log('[works] 取得件数:', items.length, '／先頭データ:', items[0]); } catch (e) {}
-      all = items; apply();
+      all = publishedSorted(items); apply(); // 公開済みのみ・公開日時の新しい順
     }).catch(function (err) {
       console.error('[microCMS] works取得に失敗:', err);
       el.innerHTML = '<p class="works-empty">施工実績を読み込めませんでした。</p>';
@@ -366,6 +402,11 @@
     fetchWorksOne(id).then(function (item) {
       // 【一時的なデバッグ】実フィールドID確認用。確認後に削除します。
       try { console.log('[works detail] item:', item); } catch (e) {}
+      // 公開日時前は、URL直接アクセスでも表示しない（日本時間で判定）
+      if (!isPublished(item)) {
+        el.innerHTML = '<p class="works-empty">この施工実績はまだ公開されていません。</p>';
+        return;
+      }
       var title = worksTitle(item), cat = worksCategory(item), date = worksDate(item);
       var img = worksImage(item), body = worksBody(item), loc = worksLocation(item), gallery = worksGallery(item);
       var meta = '';

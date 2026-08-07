@@ -72,6 +72,15 @@
   }
   function pickTitle(item) { return item.title || item.name || '（無題）'; }
   function pickBody(item) { return item.content || item.body || item.text || ''; }
+  /* サムネイル画像URL：microCMSの画像フィールドは {url,height,width} で返る。
+     未登録なら空文字（画像枠を出さない）。文字列で来た場合も許容。 */
+  function pickThumbnailUrl(item) {
+    var t = item.thumbnail;
+    if (!t) return '';
+    if (typeof t === 'string') return t;
+    if (typeof t === 'object' && t.url) return t.url;
+    return '';
+  }
   function categoryClass(cat) { return CATEGORY_CLASS[cat] || 'news-tag--other'; }
 
   function escapeHtml(s) {
@@ -169,8 +178,17 @@
       var cat = pickCategory(item);
       var title = pickTitle(item);
       var body = pickBody(item);
+      var thumbUrl = pickThumbnailUrl(item);
       var tag = cat
         ? '<span class="news-tag ' + categoryClass(cat) + '">' + escapeHtml(cat) + '</span>'
+        : '';
+      // サムネイル画像：登録がある場合のみ、タイトル下・本文上に表示。
+      // 未登録なら要素自体を出さない（空枠・壊れた画像アイコン・余白を残さない）。
+      var thumbHtml = thumbUrl
+        ? '<div class="news-detail-thumbnail-wrapper">' +
+            '<img class="news-detail-thumbnail" src="' + escapeHtml(thumbUrl) + '"' +
+            ' alt="' + escapeHtml(title) + '" loading="lazy" decoding="async">' +
+          '</div>'
         : '';
       el.innerHTML =
         '<article class="news-article">' +
@@ -180,8 +198,17 @@
             '</div>' +
             '<h1 class="news-article-title">' + escapeHtml(title) + '</h1>' +
           '</div>' +
+          thumbHtml +
           '<div class="news-article-body">' + body + '</div>' +
         '</article>';
+      // 画像の読み込みに失敗した場合はラッパーごと非表示（レイアウトを崩さない）。
+      var thumbImg = el.querySelector('.news-detail-thumbnail');
+      if (thumbImg) {
+        thumbImg.addEventListener('error', function () {
+          var w = thumbImg.closest ? thumbImg.closest('.news-detail-thumbnail-wrapper') : thumbImg.parentNode;
+          if (w) w.style.display = 'none';
+        });
+      }
       // 本文中の table をスクロール用ラッパーで囲む（スマホ対応・全記事共通）
       var bodyEl = el.querySelector('.news-article-body');
       if (bodyEl) {
